@@ -1,40 +1,23 @@
-#include <iostream>
-#include <math.h>
-#include "ant.h"
 #ifndef GAME_H
 #define GAME_H
 
+#include <iostream>
+#include <cmath>
+#include "ant.h"
 
-
-
-
-class game{
+class Game{
 public:
         int delay;
         float scale;
         int WinScale;
         int WinPosX;
         int WinPosY;
-        game();
+        Game();
 
         void init();
 };
 
 
-
-class Base
-{
-public:
-    int size;
-    int StartPosX;
-    int StartPosY;
-    double Score;
-
-    Base();
-     void Print();
-    void draw();
-    void init();
-};
 
 
 class B_base: public Base

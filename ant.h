@@ -1,7 +1,7 @@
-#include <GL/freeglut.h>
-
 #ifndef ANT_H
 #define ANT_H
+
+class Scene;
 
 #define WIDTH 300
 #define HEIGHT 150
@@ -13,6 +13,7 @@ private:
     double Speed;
     double Live;
     double SpeedAtack;
+    Scene *mainScene;
 
 public:
     int size;
@@ -21,7 +22,7 @@ public:
     int StartPosX;
     int StartPosY;
     int StartSize;
-    Ant();
+    Ant( Scene *scene );
     void set_speed(double);
     double get_speed();
     void set_live(double);

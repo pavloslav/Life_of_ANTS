@@ -1,8 +1,5 @@
 #include "r_ant.h"
 
-
-
-
 R_ant::R_ant()
 {
     Invent = false;
@@ -11,7 +8,11 @@ R_ant::R_ant()
     direction = GLUT_KEY_RIGHT;
     //set_speed(25);
 }
-
+void R_ant::DrawSnake(int i)
+{
+    glColor3f(1.0, 0.0, 0.0);
+        glRectf(r_ant[i].x * 1, r_ant[i].y * 1, (r_ant[i].x + 0.9) * 1, (r_ant[i].y + 0.9) * 1);
+}
 /*
 void R_ant::search(int j)
 {

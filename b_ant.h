@@ -1,8 +1,9 @@
-
-
 #ifndef B_ANT_H
 #define B_ANT_H
+
+
 #include "ant.h"
+class Ant;
 
 class B_ant: public Ant
 {
