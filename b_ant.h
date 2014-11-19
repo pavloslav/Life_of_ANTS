@@ -6,7 +6,7 @@
 class B_ant: public virtual Ant
 {
 public:
-    B_ant();
+    B_ant( int x, int y );
     virtual void drawSnake(int i);
     virtual void move(int i);
     virtual void go_home(int i);

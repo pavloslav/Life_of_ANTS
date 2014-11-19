@@ -1,14 +1,11 @@
 #include "r_ant.h"
 #include <GL/glut.h>
 #include "scene.h"
-R_ant::R_ant()
+
+R_ant::R_ant( int x, int y ) : Ant( x, y )
 {
-    invent = false;
-    turn = false;
-    size = startSize;
-    direction = GLUT_KEY_RIGHT;
-    //set_speed(25);
 }
+
 void R_ant::drawSnake(int i)
 {
     glColor3f(1.0, 0.0, 0.0);

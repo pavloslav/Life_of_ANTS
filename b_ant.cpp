@@ -2,17 +2,14 @@
 #include <GL/glut.h>
 #include "scene.h"
 
-B_ant::B_ant()
+B_ant::B_ant( int x, int y ) : Ant( x, y )
 {
-    invent = false;
-    turn = false;
-    size = startSize;
-    direction = GLUT_KEY_RIGHT;
 }
+
 void B_ant::drawSnake(int i)
 {
     glColor3f(0.0, 0.0, 0.0);
-    glRectf(mainScene->b_ant[i].x * 1, mainScene->b_ant[i].y * 1, (mainScene->b_ant[i].x + 0.9) * 1, (mainScene->b_ant[i].y + 0.9) * 1);
+    glRectf(mainScene->bant[i]->getX() * 1, mainScene->bant[i]->getY() * 1, (mainScene->bant[i]->getX() + 0.9) * 1, (mainScene->bant[i]->getY() + 0.9) * 1);
 }
 
 void B_ant::navig(double* targ, int *ptr, int i)
@@ -20,7 +17,7 @@ void B_ant::navig(double* targ, int *ptr, int i)
        if(targ[*ptr]<=50)
     {
 
-            if (mainScene->b_ant[i].y<mainScene->m[*ptr]->y){// верх
+            if (mainScene->bant[i]->getY()<mainScene->food[*ptr]->getY()){// верх
                 if((mainScene->bant[i]->direction != GLUT_KEY_DOWN)&&(mainScene->bant[i]->turn))
                 {
                     mainScene->bant[i]->direction = GLUT_KEY_UP;
@@ -28,7 +25,7 @@ void B_ant::navig(double* targ, int *ptr, int i)
                 }
 
             }
-                if (mainScene->b_ant[i].y>mainScene->m[*ptr]->y){ //низ
+                if (mainScene->bant[i]->getY()>mainScene->food[*ptr]->getY()){ //низ
                     if((mainScene->bant[i]->direction != GLUT_KEY_UP)&&(mainScene->bant[i]->turn))
                     {
                         mainScene->bant[i]->direction = GLUT_KEY_DOWN;
@@ -36,7 +33,7 @@ void B_ant::navig(double* targ, int *ptr, int i)
                     }
 
                 }
-            if (mainScene->b_ant[i].x<mainScene->m[*ptr]->x){// вправо
+            if (mainScene->bant[i]->getX()<mainScene->food[*ptr]->getX()){// вправо
                 if((mainScene->bant[i]->direction != GLUT_KEY_LEFT)&&(mainScene->bant[i]->turn))
                 {
                     mainScene->bant[i]->direction = GLUT_KEY_RIGHT;
@@ -44,7 +41,7 @@ void B_ant::navig(double* targ, int *ptr, int i)
                 }
 
             }
-                if (mainScene->b_ant[i].x>mainScene->m[*ptr]->x){//ліво
+                if (mainScene->bant[i]->getX()>mainScene->food[*ptr]->getX()){//ліво
                     if((mainScene->bant[i]->direction != GLUT_KEY_RIGHT)&&(mainScene->bant[i]->turn))
                     {
                         mainScene->bant[i]->direction = GLUT_KEY_LEFT;
@@ -79,21 +76,21 @@ void B_ant::chek(int i)
 }
 void B_ant::go_home(int i)
 {
-        if (mainScene->b_ant[i].y<mainScene->base[1].y){// верх
+        if (mainScene->bant[i]->getY()<mainScene->base[1].getY()){// верх
             if((mainScene->bant[i]->direction != GLUT_KEY_DOWN)&&(mainScene->bant[i]->turn))
             {
                 mainScene->bant[i]->direction = GLUT_KEY_UP;
                 mainScene->bant[i]->turn = false;
             }
         }
-            if (mainScene->b_ant[i].y>mainScene->base[1].y){ //низ
+            if (mainScene->bant[i]->getY()>mainScene->base[1].getY()){ //низ
                 if((mainScene->bant[i]->direction != GLUT_KEY_UP)&&(mainScene->bant[i]->turn))
                 {
                    mainScene->bant[i]->direction = GLUT_KEY_DOWN;
                    mainScene->bant[i]->turn = false;
                 }
             }
-        if (mainScene->b_ant[i].x<mainScene->base[1].x){// вправо
+        if (mainScene->bant[i]->getX()<mainScene->base[1].getX()){// вправо
             if((mainScene->bant[i]->direction != GLUT_KEY_RIGHT)&&(mainScene->bant[i]->turn))
             {
                 mainScene->bant[i]->direction = GLUT_KEY_RIGHT;
@@ -101,7 +98,7 @@ void B_ant::go_home(int i)
             }
         }
 
-            if (mainScene->b_ant[i].x>mainScene->base[1].x){//ліво
+            if (mainScene->bant[i]->getX()>mainScene->base[1].getX()){//ліво
                 if((mainScene->bant[i]->direction != GLUT_KEY_RIGHT)&&(mainScene->bant[i]->turn))
                 {
                     mainScene->bant[i]->direction = GLUT_KEY_LEFT;
@@ -118,7 +115,7 @@ void B_ant::go_home(int i)
 void B_ant::eject(int i)
 {
 
-    if((mainScene->bant[i]->invent)&&((mainScene->b_ant[i].x == mainScene->base[1].x)&&(mainScene->b_ant[i].y == mainScene->base[1].y)))
+    if((mainScene->bant[i]->invent)&&((mainScene->bant[i]->getX() == mainScene->base[1].getX())&&(mainScene->bant[i]->getY() == mainScene->base[1].getY())))
     {
        mainScene->bant[i]->invent=false;
         mainScene->b_base.score++;
@@ -127,31 +124,31 @@ void B_ant::eject(int i)
 }
 void B_ant::move(int i){
         for(int j = 1; j > 0; j--){
-                mainScene->b_ant[j].x = mainScene->b_ant[j-1].x;
-                mainScene->b_ant[j].y = mainScene->b_ant[j-1].y;
+                mainScene->bant[j]->setX( mainScene->bant[j-1]->getX() );
+                mainScene->bant[j]->setY( mainScene->bant[j-1]->getY() );
         }
             switch (direction){
             case GLUT_KEY_UP :
-                    mainScene->b_ant[i].y++;
+                    mainScene->bant[i]->getY()++;
                     break;
             case GLUT_KEY_DOWN :
-                    mainScene->b_ant[i].y--;
+                    mainScene->bant[i]->getY()--;
                     break;
             case GLUT_KEY_LEFT :
-                mainScene->b_ant[i].x--;
+                mainScene->bant[i]->getX()--;
                     break;
             case GLUT_KEY_RIGHT :
-                   mainScene->b_ant[i].x++;
+                   mainScene->bant[i]->getX()++;
                     break;
             case GLUT_KEY_END :
                     break;
 
         }
 
-        if(mainScene->b_ant[i].x < 0)mainScene->b_ant[i].x += WIDTH;
-        if(mainScene->b_ant[i].x >= WIDTH)mainScene->b_ant[i].x -= WIDTH;
-        if(mainScene->b_ant[i].y < 0)mainScene->b_ant[i].y += HEIGHT;
-        if(mainScene->b_ant[i].y >= HEIGHT)mainScene->b_ant[i].y -= HEIGHT;
+        if(mainScene->bant[i]->getX() < 0)mainScene->bant[i]->getX() += WIDTH;
+        if(mainScene->bant[i]->getX() >= WIDTH)mainScene->bant[i]->getX() -= WIDTH;
+        if(mainScene->bant[i]->getY() < 0)mainScene->bant[i]->getY() += HEIGHT;
+        if(mainScene->bant[i]->getY() >= HEIGHT)mainScene->bant[i]->getY() -= HEIGHT;
 }
 void B_ant::search(int j)
 {
@@ -159,18 +156,11 @@ void B_ant::search(int j)
         double targ[20];
 
         int n=0;
-        for (int i=0;i<size;++i){     //перераховує масив m[i]
-            double deltaX=mainScene->b_ant[j].x-mainScene->m[i]->x;
-            double deltaY=mainScene->b_ant[j].y-mainScene->m[i]->y;
-            double delta=((deltaX*deltaX)+(deltaY*deltaY));
-
-            targ[i] = sqrt(delta);
+        for (int i=0;i<size;++i){     //перераховує масив food[i]
+            targ[i] = mainScene->bant[j]->distance(*mainScene->food[i]);
             if(targ[i]<=targ[n]){
                 n=i;
             }
-
-
-
         }
         navig(targ,&n,j );
 }

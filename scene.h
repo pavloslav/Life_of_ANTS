@@ -19,8 +19,8 @@ public:
     B_ant *bant[20];
     B_base b_base;
     R_base r_base;
-    Food* m[20];
-    Block base[WIDTH*HEIGHT], b_ant[WIDTH*HEIGHT], target[WIDTH*HEIGHT], r_ant[WIDTH*HEIGHT];
+    Food* food[20];
+    Block base[WIDTH*HEIGHT];//, b_ant[WIDTH*HEIGHT], r_ant[WIDTH*HEIGHT];
     int delay;
     float scale;
     int winScale;

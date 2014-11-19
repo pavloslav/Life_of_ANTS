@@ -3,13 +3,12 @@
 
 #include <iostream>
 #include <cmath>
-#include "scene.h"
 
-class Food{
+#include "block.h"
+
+class Food : public virtual Block
+{
 public:
-        int x;
-        int y;
-        static Scene *mainScene;
         Food();
         void draw_food();
         void spawn();

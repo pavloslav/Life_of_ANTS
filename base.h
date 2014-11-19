@@ -1,9 +1,12 @@
 #ifndef BASE_H
 #define BASE_H
 
+
+#include "block.h"
+
 class Scene;
 
-class Base
+class Base : public virtual Block
 {
 public:
     static Scene *mainScene;

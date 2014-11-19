@@ -1,13 +1,14 @@
 #ifndef ANT_H
 #define ANT_H
 
+#include "block.h"
 class Scene;
 
 #define WIDTH 300
 #define HEIGHT 150
 #define BARR 50
 
-class Ant
+class Ant : virtual public Block
 {
 private:
     double speed;
@@ -24,7 +25,7 @@ public:
     int startSize;
     int direction;
 
-    Ant( );
+    Ant( int x, int y );
     void setSpeed(double);
     double getSpeed() const;
     void setLive(double);

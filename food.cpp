@@ -1,10 +1,8 @@
 #include "food.h"
 #include <GL/glut.h>
 
-Food::Food()
+Food::Food() : Block( (rand()%WIDTH), (rand()%HEIGHT))
 {
-x = 1;
-y = 1;
 }
 
 
@@ -14,13 +12,9 @@ void Food::draw_food()
     glRectf(x*mainScene->scale,y*mainScene->scale,(x+1)*mainScene->scale,(y+1)*mainScene->scale);
 }
 
-void Food::spawn(){
-        x = (rand()%WIDTH);
-        y = (rand()%HEIGHT);
-        for(int i = 0; i < 10; i++){
-                if((x == mainScene->r_ant[0].x)&&(y == mainScene->r_ant[0].y))spawn();
-        }
+Food::spawn()
+{
+    setX((rand()%WIDTH));
+    setY((rand()%HEIGHT));
 }
-
-
 
