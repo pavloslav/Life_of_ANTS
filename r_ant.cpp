@@ -1,5 +1,6 @@
 #include "r_ant.h"
-
+#include <GL/glut.h>
+#include "scene.h"
 R_ant::R_ant()
 {
     Invent = false;
@@ -11,7 +12,7 @@ R_ant::R_ant()
 void R_ant::DrawSnake(int i)
 {
     glColor3f(1.0, 0.0, 0.0);
-        glRectf(r_ant[i].x * 1, r_ant[i].y * 1, (r_ant[i].x + 0.9) * 1, (r_ant[i].y + 0.9) * 1);
+        glRectf(mainScene->r_ant[i].x * 1, mainScene->r_ant[i].y * 1, (mainScene->r_ant[i].x + 0.9) * 1, (mainScene->r_ant[i].y + 0.9) * 1);
 }
 /*
 void R_ant::search(int j)
@@ -44,3 +45,31 @@ void R_ant::search(int j)
 
 
 */
+void R_ant::move(int i){
+        for(int j = 1; j > 0; j--){
+                mainScene->r_ant[j].x = mainScene->r_ant[j-1].x;
+                mainScene->r_ant[j].y = mainScene->r_ant[j-1].y;
+        }
+            switch (direction){
+            case GLUT_KEY_UP :
+                    mainScene->r_ant[i].y++;
+                    break;
+            case GLUT_KEY_DOWN :
+                    mainScene->r_ant[i].y--;
+                    break;
+            case GLUT_KEY_LEFT :
+                mainScene->r_ant[i].x--;
+                    break;
+            case GLUT_KEY_RIGHT :
+                   mainScene->r_ant[i].x++;
+                    break;
+            case GLUT_KEY_END :
+                    break;
+
+        }
+
+        if(mainScene->r_ant[i].x < 0)mainScene->r_ant[i].x += WIDTH;
+        if(mainScene->r_ant[i].x >= WIDTH)mainScene->r_ant[i].x -= WIDTH;
+        if(mainScene->r_ant[i].y < 0)mainScene->r_ant[i].y += HEIGHT;
+        if(mainScene->r_ant[i].y >= HEIGHT)mainScene->r_ant[i].y -= HEIGHT;
+}

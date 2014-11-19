@@ -1,22 +1,21 @@
-#ifndef BASE_H
-#define BASE_H
+#ifndef R_BASE_H
+#define R_BASE_H
 
+#include "base.h"
 class Scene;
 
-class Base
+class R_base: public Base
 {
 public:
-    static Scene *mainScene;
     int size;
     int StartPosX;
     int StartPosY;
     double Score;
 
-
-    Base( );
-    void Print();
+    R_base( );
+     void Print();
     void draw();
     void init();
 };
 
-#endif // BASE_H
+#endif // R_BASE_H

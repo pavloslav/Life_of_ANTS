@@ -3,6 +3,7 @@
 
 class Scene;
 
+
 #define WIDTH 300
 #define HEIGHT 150
 #define BARR 50
@@ -13,16 +14,17 @@ private:
     double Speed;
     double Live;
     double SpeedAtack;
-    Scene *mainScene;
+
 
 public:
+    static Scene *mainScene;
     int size;
     bool turn;
     bool Invent;
     int StartPosX;
     int StartPosY;
     int StartSize;
-    Ant( Scene *scene );
+    Ant( );
     void set_speed(double);
     double get_speed();
     void set_live(double);
@@ -38,7 +40,7 @@ public:
     void move();
     void go();
     void eject(int i);
-    void eat(int i);
+    virtual void eat(int i);
     void chek(int i);
 
 };

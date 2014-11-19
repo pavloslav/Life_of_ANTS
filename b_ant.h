@@ -1,9 +1,7 @@
 #ifndef B_ANT_H
 #define B_ANT_H
 
-
 #include "ant.h"
-class Ant;
 
 class B_ant: public Ant
 {
@@ -19,7 +17,6 @@ public:
     void navig(double* targ, int *ptr , int i);
         void search(int j);
         void chek(int i);
-        void eat(int i);
     void cut();
     void eject(int i);
 
