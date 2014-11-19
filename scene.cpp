@@ -1,16 +1,16 @@
 #include "scene.h"
 #include <GL/glut.h>
 
-Scene::Scene()
+Scene::Scene() :
+     delay ( 100 ),
+     scale ( 1.0 ),
+     winScale ( 5 ),
+     winPosX ( 200 ),
+     winPosY ( 100 )
 {
-     delay = 100;
-     scale = 1;
-     WinScale = 5;
-     WinPosX = 200;
-     WinPosY = 100;
 }
 
-void Scene::DrawField()
+void Scene::drawField() const
 {
    glColor3f(0.0,1.0,0.0);
    glBegin(GL_LINES);
@@ -21,7 +21,7 @@ void Scene::DrawField()
     glEnd();
 }
 
-void Scene::DrawBar()
+void Scene::drawBar() const
 {
     glColor3f(1.0,1.0,0.0);
     glBegin(GL_LINES);
@@ -33,24 +33,25 @@ void Scene::DrawBar()
 
 }
 
-void keyboard(unsigned char key, int x, int y);
+void keyboard(unsigned char key, int , int );
 void timer(int = 0);
 void display();
 
-void Scene::Display() {
+void Scene::display() const
+{
 
      glClear(GL_COLOR_BUFFER_BIT);
 
-    DrawField();
+    drawField();
     for(int i=0;i<20;++i)
     {
-    rant[i]->DrawSnake(i);
-    bant[i]->DrawSnake(i);
+    rant[i]->drawSnake(i);
+    bant[i]->drawSnake(i);
     }
     r_base.draw();
     b_base.draw();
-    r_base.Print();
-    b_base.Print();
+    r_base.print();
+    b_base.print();
 
 
    for (int i=0;i<20;i++)
@@ -61,7 +62,7 @@ void Scene::Display() {
    glutPostOverlayRedisplay();
 }
 
-void Scene::AllFoods()
+void Scene::allFoods()
 {
     for (int i=0;i<20;i++){
         m[i]->spawn();
@@ -69,13 +70,9 @@ void Scene::AllFoods()
 
 }
 
-
-
-
-
-void Scene::Timer(int)
+void Scene::timer(int)
 {
-  Display();
+  display();
   for(int i=0;i<20;++i){
   rant[i]->turn = true;
   rant[i]->chek(i);
@@ -89,17 +86,15 @@ void Scene::Timer(int)
   bant[i]->eat(i);
   bant[i]->eject(i);
   }
-
-
- glutTimerFunc(50,timer,0);
+  glutTimerFunc(50,::timer,0);
 }
 
-void Scene::Keyboard(unsigned char key, int , int )
+void Scene::keyboard(unsigned char key )
 {
     switch (key) {
 
     case 'z':
-        AllFoods();
+        allFoods();
 
         break;
     default:

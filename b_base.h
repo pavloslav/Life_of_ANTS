@@ -6,15 +6,9 @@
 class B_base: public Base
 {
 public:
-    int size;
-    int StartPosX;
-    int StartPosY;
-    double Score;
-
     B_base( );
-     void Print();
-    void draw();
-    void init();
+    virtual void print() const;
+    virtual void draw() const;
 };
 
 #endif // B_BASE_H

@@ -4,21 +4,19 @@
 
 B_ant::B_ant()
 {
-    Invent = false;
+    invent = false;
     turn = false;
-    size = Ant::StartSize;
+    size = startSize;
     direction = GLUT_KEY_RIGHT;
-    //set_speed(25);
 }
-void B_ant::DrawSnake(int i)
+void B_ant::drawSnake(int i)
 {
     glColor3f(0.0, 0.0, 0.0);
-        glRectf(mainScene->b_ant[i].x * 1, mainScene->b_ant[i].y * 1, (mainScene->b_ant[i].x + 0.9) * 1, (mainScene->b_ant[i].y + 0.9) * 1);
+    glRectf(mainScene->b_ant[i].x * 1, mainScene->b_ant[i].y * 1, (mainScene->b_ant[i].x + 0.9) * 1, (mainScene->b_ant[i].y + 0.9) * 1);
 }
 
 void B_ant::navig(double* targ, int *ptr, int i)
 {
-    int x;
        if(targ[*ptr]<=50)
     {
 
@@ -59,9 +57,7 @@ void B_ant::navig(double* targ, int *ptr, int i)
 
             if(targ[*ptr]>=50)
             {
-
-                x = (rand()% 3);
-                        if(x<2){
+                        if((rand()% 3)<2){
                 mainScene->bant[i]->direction = GLUT_KEY_END;
                 mainScene->bant[i]->turn = false;
                         }
@@ -73,11 +69,11 @@ void B_ant::navig(double* targ, int *ptr, int i)
 
 void B_ant::chek(int i)
 {
-    if (mainScene->bant[i]->Invent==true){
+    if (mainScene->bant[i]->invent==true){
 
         mainScene->bant[i]->go_home(i);
     }
-    if (mainScene->bant[i]->Invent==false)
+    if (mainScene->bant[i]->invent==false)
         search(i);
 
 }
@@ -122,10 +118,10 @@ void B_ant::go_home(int i)
 void B_ant::eject(int i)
 {
 
-    if((mainScene->bant[i]->Invent)&&((mainScene->b_ant[i].x == mainScene->base[1].x)&&(mainScene->b_ant[i].y == mainScene->base[1].y)))
+    if((mainScene->bant[i]->invent)&&((mainScene->b_ant[i].x == mainScene->base[1].x)&&(mainScene->b_ant[i].y == mainScene->base[1].y)))
     {
-       mainScene->bant[i]->Invent=false;
-        mainScene->b_base.Score++;
+       mainScene->bant[i]->invent=false;
+        mainScene->b_base.score++;
 
 }
 }
@@ -162,24 +158,19 @@ void B_ant::search(int j)
         double size = 20;
         double targ[20];
 
-        double delta=0;
-        int deltaX;
-        int deltaY;
-
-        int* n=new int;
-        *n=0;
+        int n=0;
         for (int i=0;i<size;++i){     //перераховує масив m[i]
-            deltaX=mainScene->b_ant[j].x-mainScene->m[i]->x;
-            deltaY=mainScene->b_ant[j].y-mainScene->m[i]->y;
-            delta=((deltaX*deltaX)+(deltaY*deltaY));
+            double deltaX=mainScene->b_ant[j].x-mainScene->m[i]->x;
+            double deltaY=mainScene->b_ant[j].y-mainScene->m[i]->y;
+            double delta=((deltaX*deltaX)+(deltaY*deltaY));
 
             targ[i] = sqrt(delta);
-            if(targ[i]<=targ[*n]){
-                *n=i;
+            if(targ[i]<=targ[n]){
+                n=i;
             }
 
 
 
         }
-        navig(targ,n,j );
+        navig(targ,&n,j );
 }

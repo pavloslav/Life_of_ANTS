@@ -8,15 +8,12 @@ class Base
 public:
     static Scene *mainScene;
     int size;
-    int StartPosX;
-    int StartPosY;
-    double Score;
-
-
+    int startPosX;
+    int startPosY;
+    double score;
     Base( );
-    void Print();
-    void draw();
-    void init();
+    virtual void print() const =0;
+    virtual void draw() const =0;
 };
 
 #endif // BASE_H

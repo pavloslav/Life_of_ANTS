@@ -23,18 +23,18 @@ public:
     Block base[WIDTH*HEIGHT], b_ant[WIDTH*HEIGHT], target[WIDTH*HEIGHT], r_ant[WIDTH*HEIGHT];
     int delay;
     float scale;
-    int WinScale;
-    int WinPosX;
-    int WinPosY;
+    int winScale;
+    int winPosX;
+    int winPosY;
 
     void init();
 
-    void DrawField();
-    void DrawBar();
-    void Display();
-    void AllFoods();
-    void Keyboard(unsigned char key, int x, int y);
-    void Timer(int = 0);
+    void drawField() const;
+    void drawBar() const;
+    void display() const;
+    void allFoods();
+    void keyboard(unsigned char key);
+    void timer(int = 0);
 };
 
 void search(Block* ant, int j,Food* m);

@@ -6,7 +6,7 @@ B_base::B_base()
 {
 }
 
-void B_base::draw()
+void B_base::draw() const
 {
     glColor3f(0, 0, 0);
     glBegin(GL_POLYGON);
@@ -17,9 +17,9 @@ void B_base::draw()
     glEnd();
 }
 
-void B_base::Print()
+void B_base::print() const
 {
     glColor3f(0.0f, 0.0f, 0.0f);
     glRasterPos2f(280,180 );
-    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,'0' + Score);
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,'0' + score);
 }

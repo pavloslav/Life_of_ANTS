@@ -4,13 +4,9 @@
 
 R_base::R_base( )
 {
-    size = 1;
-    Score = 0;
-    StartPosX = 1;
-    StartPosY = 1;
 }
 
-void R_base::draw()
+void R_base::draw() const
 {
     glColor3f(1, 0, 0);
     glBegin(GL_POLYGON);
@@ -20,10 +16,10 @@ void R_base::draw()
     glVertex2f( mainScene->base[0].x, mainScene->base[0].y - mainScene->scale);
     glEnd();
 }
-void R_base::Print()
+void R_base::print() const
 {
     glColor3f(1.0f, 0.0f, 0.0f);
     glRasterPos2f(15,180 );
-    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,'0' + Score);
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,'0' + score);
 
     }

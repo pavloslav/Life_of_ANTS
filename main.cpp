@@ -7,6 +7,7 @@
 #include "b_ant.h"
 #include "r_ant.h"
 
+#define VERSION "0.07"
 
 using namespace std;
 
@@ -16,19 +17,19 @@ Scene *Base::mainScene = &::mainScene;
 Scene *Block::mainScene = &::mainScene;
 Scene *Food::mainScene = &::mainScene;
 
-void keyboard(unsigned char key, int x, int y)
+void keyboard(unsigned char key, int , int )
 {
-    mainScene.Keyboard(key,x,y);
+    mainScene.keyboard(key);
 }
 
 void timer(int = 0)
 {
-    mainScene.Timer();
+    mainScene.timer();
 }
 
 void display()
 {
-    mainScene.Display();
+    mainScene.display();
 }
 
 
@@ -45,7 +46,7 @@ int main(int argc, char **argv) {
     }
 
     srand(time(NULL));
-    mainScene.AllFoods();
+    mainScene.allFoods();
     mainScene.base[0].x=15;
     mainScene.base[0].y=15;
     mainScene.base[1].x = 270;
@@ -54,9 +55,9 @@ int main(int argc, char **argv) {
 
 glutInit(&argc, argv);
 glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB );
-glutInitWindowSize(WIDTH*mainScene.WinScale, BARR+HEIGHT*mainScene.WinScale);
-glutInitWindowPosition(mainScene.WinPosX, mainScene.WinPosY);
-glutCreateWindow ("Ant 0.05");
+glutInitWindowSize(WIDTH*mainScene.winScale, BARR+HEIGHT*mainScene.winScale);
+glutInitWindowPosition(mainScene.winPosX, mainScene.winPosY);
+glutCreateWindow ("Ant " VERSION);
 glClearColor(1.0,1.0,0.6,1.0);  //цвет фона
 glMatrixMode(GL_PROJECTION);
 glLoadIdentity();

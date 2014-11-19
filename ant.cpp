@@ -3,40 +3,46 @@
 #include <GL/glut.h>
 
 Ant::Ant( ) :
+    speed( 1 ),
+    live( 100 ),
+    speedAtack( 1 ),
     size( 1 ),
-    StartPosX ( WIDTH / 6 ),
-    StartPosY ( HEIGHT / 6 ),
-    StartSize( 1 )
+    turn( true ),
+    invent( true ),
+    startPosX ( WIDTH / 6 ),
+    startPosY ( HEIGHT / 6 ),
+    startSize( 1 ),
+    direction( GLUT_KEY_UP )
 {
 }
 
-void Ant::set_speed(double sp)
+void Ant::setSpeed(double sp)
 {
-    Speed=sp;
+    speed=sp;
 }
-double Ant::get_speed()
+double Ant::getSpeed() const
 {
-    return Speed;
-}
-
-void Ant::set_live(double lv)
-{
-    Live = lv;
+    return speed;
 }
 
-double Ant::get_live()
+void Ant::setLive(double lv)
 {
-    return Live;
+    live = lv;
 }
 
-void Ant::set_speedatack(double spa)
+double Ant::getLive() const
 {
-    SpeedAtack = spa;
+    return live;
 }
 
-double Ant::get_speedatack()
+void Ant::setSpeedatack(double spa)
 {
-    return SpeedAtack;
+    speedAtack = spa;
+}
+
+double Ant::getSpeedatack() const
+{
+    return speedAtack;
 }
 
 
@@ -45,16 +51,12 @@ void Ant::search(int j)
         double size = 20;
         double targ[20];
 
-        double delta=0;
-        int deltaX;
-        int deltaY;
-
         int* n=new int;
         *n=0;
         for (int i=0;i<size;++i){     //перераховує масив m[i]
-            deltaX=mainScene->r_ant[j].x-mainScene->m[i]->x;
-            deltaY=mainScene->r_ant[j].y-mainScene->m[i]->y;
-            delta=((deltaX*deltaX)+(deltaY*deltaY));
+            double deltaX=mainScene->r_ant[j].x-mainScene->m[i]->x,
+                   deltaY=mainScene->r_ant[j].y-mainScene->m[i]->y;
+            double delta=((deltaX*deltaX)+(deltaY*deltaY));
 
             targ[i] = sqrt(delta);
             if(targ[i]<=targ[*n]){
@@ -72,7 +74,6 @@ void Ant::search(int j)
 
 void Ant::navig(double* targ, int *ptr, int i )
 {
-    int x;
        if(targ[*ptr]<=50)
     {
 
@@ -114,8 +115,7 @@ void Ant::navig(double* targ, int *ptr, int i )
             if(targ[*ptr]>=50)
             {
 
-                x = (rand()% 3);
-                        if(x<2){
+                        if((rand()% 3)<2){
                 mainScene->rant[i]->direction = GLUT_KEY_END;
                 mainScene->rant[i]->turn = false;
                         }
@@ -129,7 +129,7 @@ void Ant::eat(int j){
     for(int i=0;i<20;++i)
     {
         if((mainScene->r_ant[j].x == mainScene->m[i]->x)&&(mainScene->r_ant[j].y == mainScene->m[i]->y)){
-            mainScene->rant[j]->Invent=true;
+            mainScene->rant[j]->invent=true;
 
         mainScene->m[i]->spawn();
         }
@@ -141,13 +141,12 @@ void Ant::eat(int j){
 
 void Ant::chek(int i)
 {
-    if (mainScene->rant[i]->Invent==true){
+    if (mainScene->rant[i]->invent==true){
 
         mainScene->rant[i]->go_home(i);
     }
-    if (mainScene->rant[i]->Invent==false)
+    if (mainScene->rant[i]->invent==false)
         search(i);
-
 }
 
 
@@ -194,10 +193,10 @@ void Ant::go_home(int i)
 void Ant::eject(int i)
 {
 
-    if((mainScene->rant[i]->Invent)&&((mainScene->r_ant[i].x == mainScene->base[0].x)&&(mainScene->r_ant[i].y == mainScene->base[0].y)))
+    if((mainScene->rant[i]->invent)&&((mainScene->r_ant[i].x == mainScene->base[0].x)&&(mainScene->r_ant[i].y == mainScene->base[0].y)))
     {
-       mainScene->rant[i]->Invent=false;
-        mainScene->r_base.Score++;
+       mainScene->rant[i]->invent=false;
+        mainScene->r_base.score++;
 
 }
 }

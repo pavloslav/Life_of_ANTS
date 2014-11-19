@@ -3,13 +3,13 @@
 #include "scene.h"
 R_ant::R_ant()
 {
-    Invent = false;
+    invent = false;
     turn = false;
-    size = Ant::StartSize;
+    size = startSize;
     direction = GLUT_KEY_RIGHT;
     //set_speed(25);
 }
-void R_ant::DrawSnake(int i)
+void R_ant::drawSnake(int i)
 {
     glColor3f(1.0, 0.0, 0.0);
         glRectf(mainScene->r_ant[i].x * 1, mainScene->r_ant[i].y * 1, (mainScene->r_ant[i].x + 0.9) * 1, (mainScene->r_ant[i].y + 0.9) * 1);
