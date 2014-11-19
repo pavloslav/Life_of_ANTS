@@ -13,7 +13,7 @@ public:
     virtual void navig(double* targ, int *ptr , int i);
     virtual void search(int j);
     virtual void chek(int i);
-    //virtual void cut();
+    virtual void eat(int i);
     virtual void eject(int i);
 };
 
