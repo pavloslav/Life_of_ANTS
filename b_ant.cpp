@@ -121,6 +121,18 @@ void B_ant::eject(int i)
         mainScene->b_base.score++;
 
 }
+
+void B_ant::eat(int j){
+	for (int i = 0; i<20; ++i)
+	{
+		if ((mainScene->b_ant[j].x == mainScene->m[i]->x) && (mainScene->b_ant[j].y == mainScene->m[i]->y)){
+			mainScene->bant[j]->invent = true;
+
+			mainScene->m[i]->spawn();
+		}
+	}
+}
+
 }
 void B_ant::move(int i){
         for(int j = 1; j > 0; j--){
