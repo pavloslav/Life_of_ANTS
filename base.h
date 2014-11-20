@@ -1,21 +1,20 @@
 #ifndef BASE_H
 #define BASE_H
 
-#include "block.h"
+#include "colonyblock.h"
 
-class Scene;
+class Colony;
 
-class Base : public Block
+class Base : public ColonyBlock
 {
+public:
+    Base( int x, int y, Colony *col );
+    virtual void print() const;
+    virtual void draw() const;
 private:
     int size;
     int startPosX;
     int startPosY;
-public:
-    double score;
-    Base( int x, int y );
-    virtual void print() const =0;
-    virtual void draw() const =0;
 };
 
 #endif // BASE_H

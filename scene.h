@@ -1,12 +1,12 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "b_ant.h"
-#include "r_ant.h"
-#include "r_base.h"
-#include "b_base.h"
+#include "ant.h"
+#include "base.h"
 #include "food.h"
 #include "block.h"
+#include "colony.h"
+#include <vector>
 
 class Food;
 class Block;
@@ -15,11 +15,9 @@ class Scene
 {
 public:
     Scene();
-    R_ant *rant[20];
-    B_ant *bant[20];
-    B_base *b_base;
-    R_base *r_base;
-    Food* food[20];
+    std::vector< Food * > food;
+    std::vector< Colony * > colonies;
+    Colony black, red;
     int delay;
     float scale;
     int winScale;
@@ -34,6 +32,7 @@ public:
     void allFoods();
     void keyboard(unsigned char key);
     void timer(int = 0);
+    Base* nearestBase( ColonyBlock *who );
 };
 
 #endif // SCENE_H

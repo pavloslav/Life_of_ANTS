@@ -1,14 +1,17 @@
 #include "ant.h"
 #include "scene.h"
-#include <cstdlib>
 #include "food.h"
 #include "base.h"
+#include "colony.h"
+#include "colonyblock.h"
 
-Ant::Ant( int x, int y, Base *home ) : Block( x, y ),
+#include <cstdlib>
+#include <GL/glut.h>
+
+Ant::Ant( int x, int y, Colony *col ) : ColonyBlock( x, y, col ),
     speed( 1 ),
     live( 100 ),
     speedAtack( 1 ),
-    home_(home),
     size( 1 ),
     turn( false ),
     isCarringFood( false ),
@@ -17,6 +20,7 @@ Ant::Ant( int x, int y, Base *home ) : Block( x, y ),
     startSize( 1 ),
     direction( right )
 {
+    getColony()->ants.push_back( this );
 }
 
 void Ant::setSpeed(double sp)
@@ -51,10 +55,10 @@ double Ant::getSpeedatack() const
 void Ant::search()
 {
     int size = 20;
-    int minDistance = distance(*mainScene->food[0]);
+    int minDistance = distance( mainScene->food[0] );
     Food *closestFood = mainScene->food[0];
     for (int i=1;i<size;++i){     //перераховує масив food[i]
-        double currentDistance = distance(*mainScene->food[i]);
+        double currentDistance = distance( mainScene->food[i] );
         if(minDistance<currentDistance){
             minDistance = currentDistance;
             closestFood = mainScene->food[i];
@@ -119,7 +123,7 @@ void Ant::eat()
 {
     for(int i=0;i<20;++i)
     {
-        if( isOn( *mainScene->food[ i ] ) )
+        if( isOn( mainScene->food[ i ] ) )
         {
             isCarringFood=true;
             mainScene->food[i]->spawn();
@@ -141,15 +145,17 @@ void Ant::chek()
 
 void Ant::goHome()
 {
-     goTo( home_ );
+    //goTo( home_ );
+    goTo( getColony()->nearestBase( this ) );
 }
 
 void Ant::eject()
 {
-    if( (isCarringFood)&&( isOn( *home_ ) ) )
+    Base *home = getColony()->nearestBase( this );
+    if( ( isCarringFood )&&( isOn( home ) ) )
     {
         isCarringFood=false;
-        home_->score++;
+        getColony()->score++;
     }
 }
 
@@ -157,7 +163,13 @@ void Ant::action()
 {
     turn = true;
     chek();
-    move();
+    step(direction);
     eat();
     eject();
+}
+
+void Ant::draw()
+{
+    glColor3f( getColony()->red, getColony()->green, getColony()->blue );
+    glRectf(getX() * 1, getY() * 1, (getX() + 0.9) * 1, (getY() + 0.9) * 1);
 }
