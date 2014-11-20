@@ -1,18 +1,21 @@
 #include "ant.h"
 #include "scene.h"
-#include <GL/glut.h>
+#include <cstdlib>
+#include "food.h"
+#include "base.h"
 
-Ant::Ant( int x, int y ) : Block( x, y ),
+Ant::Ant( int x, int y, Base *home ) : Block( x, y ),
     speed( 1 ),
     live( 100 ),
     speedAtack( 1 ),
+    home_(home),
     size( 1 ),
     turn( false ),
-    invent( false ),
+    isCarringFood( false ),
     startPosX ( WIDTH / 6 ),
     startPosY ( HEIGHT / 6 ),
     startSize( 1 ),
-    direction( GLUT_KEY_RIGHT )
+    direction( right )
 {
 }
 
@@ -45,152 +48,104 @@ double Ant::getSpeedatack() const
     return speedAtack;
 }
 
-void Ant::search(int j)
+void Ant::search()
 {
-        double size = 20;
-        double targ[20];
-
-        int n = 0;
-        for (int i=0;i<size;++i){     //перераховує масив food[i]
-            targ[i] = mainScene->rant[j]->distance(*mainScene->food[i]);
-            if(targ[i]<=targ[n]){
-                n=i;
+        int size = 20;
+        int minDistance = distance(*mainScene->food[0]);
+        Food *closestFood = mainScene->food[0];
+        for (int i=1;i<size;++i){     //перераховує масив food[i]
+            double currentDistance = distance(*mainScene->food[i]);
+            if(minDistance<currentDistance){
+                minDistance = currentDistance;
+                closestFood = mainScene->food[i];
             }
-
-
-
         }
-        navig(targ,&n,j );
+        navig( minDistance, closestFood );
 }
 
 
-
-
-void Ant::navig(double* targ, int *ptr, int i )
+void Ant::goTo(Block *target)
 {
-       if(targ[*ptr]<=50)
-    {
+    if (getY()<target->getY()){// верх
+        if((direction != Block::down)&&(turn))
+        {
+            direction = Block::up;
+            turn = false;
+        }
+    }
+    if (getY()>target->getY()){ //низ
+        if((direction != Block::up)&&(turn))
+        {
+            direction = Block::down;
+            turn = false;
+        }
+    }
+    if (getX()<target->getX()){// вправо
+        if((direction != Block::left)&&(turn))
+        {
+            direction = Block::right;
+            turn = false;
+        }
+    }
+    if (getX()>target->getX()){//ліво
+        if((direction != Block::right)&&(turn))
+        {
+            direction = Block::left;
+            turn = false;
+        }
 
-            if (mainScene->rant[i]->getY()<mainScene->food[*ptr]->getY()){// верх
-                if((mainScene->rant[i]->direction != GLUT_KEY_DOWN)&&(mainScene->rant[i]->turn))
-                {
-                    mainScene->rant[i]->direction = GLUT_KEY_UP;
-                    mainScene->rant[i]->turn = false;
-                }
-
-            }
-                if (mainScene->rant[i]->getY()>mainScene->food[*ptr]->getY()){ //низ
-                    if((mainScene->rant[i]->direction != GLUT_KEY_UP)&&(mainScene->rant[i]->turn))
-                    {
-                        mainScene->rant[i]->direction = GLUT_KEY_DOWN;
-                        mainScene->rant[i]->turn = false;
-                    }
-
-                }
-            if (mainScene->rant[i]->getX()<mainScene->food[*ptr]->getX()){// вправо
-                if((mainScene->rant[i]->direction != GLUT_KEY_LEFT)&&(mainScene->rant[i]->turn))
-                {
-                    mainScene->rant[i]->direction = GLUT_KEY_RIGHT;
-                    mainScene->rant[i]->turn = false;
-                }
-
-            }
-                if (mainScene->rant[i]->getX()>mainScene->food[*ptr]->getX()){//ліво
-                    if((mainScene->rant[i]->direction != GLUT_KEY_RIGHT)&&(mainScene->rant[i]->turn))
-                    {
-                        mainScene->rant[i]->direction = GLUT_KEY_LEFT;
-                        mainScene->rant[i]->turn = false;
-                    }
-
-                }
-       }
-
-
-            if(targ[*ptr]>=50)
-            {
-
-                        if((rand()% 3)<2){
-                mainScene->rant[i]->direction = GLUT_KEY_END;
-                mainScene->rant[i]->turn = false;
-                        }
-                        else
-                            go_home(i);
-            }
-
+    }
 }
 
-void Ant::eat(int j){
+void Ant::navig( double distance, Food *target )
+{
+    if(distance<=50)
+    {
+        goTo(target);
+    }
+    if(distance>=50)
+    {
+        if((rand()% 3)<2)
+        {
+            direction = Block::end;
+            turn = false;
+        }
+        else
+            goHome();
+    }
+}
+
+void Ant::eat(){
     for(int i=0;i<20;++i)
     {
-        if((mainScene->rant[j]->getX() == mainScene->food[i]->getX())&&(mainScene->rant[j]->getY() == mainScene->food[i]->getY())){
-            mainScene->rant[j]->invent=true;
-
+        if((getX() == mainScene->food[i]->getX())&&(getY() == mainScene->food[i]->getY()))
+        {
+            isCarringFood=true;
             mainScene->food[i]->spawn();
         }
-}
-}
-
-
-
-
-void Ant::chek(int i)
-{
-    if (mainScene->rant[i]->invent==true){
-
-        mainScene->rant[i]->go_home(i);
-    }
-    if (mainScene->rant[i]->invent==false)
-        search(i);
-}
-
-
-
-
-
-
-void Ant::go_home(int i)
-{
-        if (mainScene->rant[i]->getY()<mainScene->base[0].getY()){// верх
-            if((mainScene->rant[i]->direction != GLUT_KEY_DOWN)&&(mainScene->rant[i]->turn))
-            {
-                mainScene->rant[i]->direction = GLUT_KEY_UP;
-                mainScene->rant[i]->turn = false;
-            }
-        }
-            if (mainScene->rant[i]->getY()>mainScene->base[0].getY()){ //низ
-                if((mainScene->rant[i]->direction != GLUT_KEY_UP)&&(mainScene->rant[i]->turn))
-                {
-                   mainScene->rant[i]->direction = GLUT_KEY_DOWN;
-                   mainScene->rant[i]->turn = false;
-                }
-            }
-        if (mainScene->rant[i]->getX()<mainScene->base[0].getX()){// вправо
-            if((mainScene->rant[i]->direction != GLUT_KEY_RIGHT)&&(mainScene->rant[i]->turn))
-            {
-                mainScene->rant[i]->direction = GLUT_KEY_RIGHT;
-                mainScene->rant[i]->turn = false;
-            }
-        }
-
-            if (mainScene->rant[i]->getX()>mainScene->base[0].getX()){//ліво
-                if((mainScene->rant[i]->direction != GLUT_KEY_RIGHT)&&(mainScene->rant[i]->turn))
-                {
-                    mainScene->rant[i]->direction = GLUT_KEY_LEFT;
-                    mainScene->rant[i]->turn = false;
-
-
-            }
-
-
     }
 }
-void Ant::eject(int i)
-{
 
-    if((mainScene->rant[i]->invent)&&((mainScene->rant[i]->getX() == mainScene->base[0].getX())&&(mainScene->rant[i]->getY() == mainScene->base[0].getY())))
+void Ant::chek()
+{
+    if (isCarringFood){
+        goHome();
+    }
+    else
+        search();
+}
+
+void Ant::goHome()
+{
+     goTo( home_ );
+}
+
+void Ant::eject()
+{
+    if((isCarringFood)&&((getX() == home_->getX())&&(getY() == home_->getY())))
     {
-       mainScene->rant[i]->invent=false;
-        mainScene->r_base.score++;
+        isCarringFood=false;
+        home_->score++;
+    }
+}
 
-}
-}

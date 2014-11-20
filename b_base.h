@@ -6,7 +6,7 @@
 class B_base: public Base
 {
 public:
-    B_base( );
+    B_base( int x, int y );
     virtual void print() const;
     virtual void draw() const;
 };

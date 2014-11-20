@@ -1,15 +1,15 @@
 #ifndef R_ANT_H
 #define R_ANT_H
+
 #include "ant.h"
 
-class R_ant: public virtual Ant
+class R_ant: public Ant
 {
 public:
-
-    R_ant( int x, int y );
-    virtual void move(int i);
+    R_ant( int x, int y, Base *base );
+    virtual void move();
     //virtual void cut();
-    virtual void drawSnake(int i);
+    virtual void drawSnake();
 };
 
 

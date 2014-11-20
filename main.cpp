@@ -3,66 +3,45 @@
 #include <GL\glut.h>
 
 #include "scene.h"
-#include "ant.h"
-#include "b_ant.h"
-#include "r_ant.h"
+#include "block.h"
 
-#define VERSION "0.08"
+#define VERSION "0.09"
 
 using namespace std;
 
-Scene mainScene;
-Scene *Ant::mainScene = &::mainScene;
-Scene *Base::mainScene = &::mainScene;
-Scene *Block::mainScene = &::mainScene;
-
 void keyboard(unsigned char key, int , int )
 {
-    mainScene.keyboard(key);
+    Block::mainScene->keyboard(key);
 }
 
 void timer(int = 0)
 {
-    mainScene.timer();
+    Block::mainScene->timer();
 }
 
 void display()
 {
-    mainScene.display();
+    Block::mainScene->display();
 }
 
-
-int main(int argc, char **argv) {
-    for(int i=0;i<20;++i)
-    {
-        mainScene.bant[i]= new B_ant( rand()%30+ 250,
-                                      rand()%30+ 100);
-        mainScene.rant[i]= new R_ant( rand()% 30,
-                                      rand()% 30 );
-        mainScene.food[i] = new Food();
-    }
-
+int main(int argc, char **argv)
+{
     srand(time(NULL));
-    mainScene.allFoods();
-    mainScene.base[0].setX(15);
-    mainScene.base[0].setY(15);
-    mainScene.base[1].setX(270);
-    mainScene.base[1].setY(120);
+    Block::mainScene = new Scene();
 
+    glutInit(&argc, argv);
+    glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB );
+    glutInitWindowSize(WIDTH*Block::mainScene->winScale, BARR+HEIGHT*Block::mainScene->winScale);
+    glutInitWindowPosition(Block::mainScene->winPosX, Block::mainScene->winPosY);
+    glutCreateWindow ("Ant " VERSION);
+    glClearColor(1.0,1.0,0.6,1.0);  //цвет фона
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0, WIDTH, 0, BARR+HEIGHT);
+    glutKeyboardFunc(keyboard);
+    glutDisplayFunc (display);
 
-glutInit(&argc, argv);
-glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB );
-glutInitWindowSize(WIDTH*mainScene.winScale, BARR+HEIGHT*mainScene.winScale);
-glutInitWindowPosition(mainScene.winPosX, mainScene.winPosY);
-glutCreateWindow ("Ant " VERSION);
-glClearColor(1.0,1.0,0.6,1.0);  //цвет фона
-glMatrixMode(GL_PROJECTION);
-glLoadIdentity();
-gluOrtho2D(0,WIDTH,0,BARR+HEIGHT);
-glutKeyboardFunc(keyboard);
-glutDisplayFunc (display);
+    glutTimerFunc(50,timer,0);
 
-glutTimerFunc(50,timer,0);
-
-glutMainLoop();
+    glutMainLoop();
 }

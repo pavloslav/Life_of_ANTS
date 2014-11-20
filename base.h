@@ -1,20 +1,18 @@
 #ifndef BASE_H
 #define BASE_H
 
-
 #include "block.h"
 
 class Scene;
 
-class Base : public virtual Block
+class Base : public Block
 {
 public:
-    static Scene *mainScene;
     int size;
     int startPosX;
     int startPosY;
     double score;
-    Base( );
+    Base( int x, int y );
     virtual void print() const =0;
     virtual void draw() const =0;
 };

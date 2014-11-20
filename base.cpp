@@ -1,10 +1,10 @@
 #include "base.h"
 
 
-Base::Base():
+Base::Base( int x, int y ): Block( x, y ),
     size( 1 ),
-    startPosX( 1 ),
-    startPosY( 1 ),
+    startPosX( x ),
+    startPosY( y ),
     score( 0 )
 {
 }

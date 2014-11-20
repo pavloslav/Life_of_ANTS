@@ -2,7 +2,7 @@
 #include <GL/glut.h>
 #include "scene.h"
 
-R_base::R_base( )
+R_base::R_base( int x, int y ): Base( x, y )
 {
 }
 
@@ -10,10 +10,10 @@ void R_base::draw() const
 {
     glColor3f(1, 0, 0);
     glBegin(GL_POLYGON);
-    glVertex2f( mainScene->base[0].x + mainScene->scale, mainScene->base[0].y);
-    glVertex2f( mainScene->base[0].x, mainScene->base[0].y + mainScene->scale);
-    glVertex2f( mainScene->base[0].x - mainScene->scale, mainScene->base[0].y);
-    glVertex2f( mainScene->base[0].x, mainScene->base[0].y - mainScene->scale);
+    glVertex2f( getX() + mainScene->scale, getY());
+    glVertex2f( getX(), getY() + mainScene->scale);
+    glVertex2f( getX() - mainScene->scale, getY());
+    glVertex2f( getX(), getY() - mainScene->scale);
     glEnd();
 }
 void R_base::print() const

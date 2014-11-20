@@ -3,18 +3,18 @@
 #include "scene.h"
 #include <cmath>
 
-Block::Block( int x_, int y_ ) :
-    x(_x), y(_y)
+Block::Block( int x, int y ) :
+    x_(x), y_(y)
 {
 }
 
 void Block::draw()
 {
     glColor3f(0.0,1.0,0.0);
-    glVertex2f(x*mainScene->scale,y*mainScene->scale);
-    glVertex2f(x*mainScene->scale+mainScene->scale,y*mainScene->scale);
-    glVertex2f(x*mainScene->scale+mainScene->scale,y*mainScene->scale+mainScene->scale);
-    glVertex2f(x*mainScene->scale,y*mainScene->scale+mainScene->scale);
+    glVertex2f(x_*mainScene->scale,y_*mainScene->scale);
+    glVertex2f(x_*mainScene->scale+mainScene->scale,y_*mainScene->scale);
+    glVertex2f(x_*mainScene->scale+mainScene->scale,y_*mainScene->scale+mainScene->scale);
+    glVertex2f(x_*mainScene->scale,y_*mainScene->scale+mainScene->scale);
 }
 void Block::setX( int x )
 {
@@ -22,7 +22,7 @@ void Block::setX( int x )
 }
 int Block::getX() const
 {
-    return x;
+    return x_;
 }
 
 void Block::setY( int y )
@@ -32,7 +32,7 @@ void Block::setY( int y )
 
 int Block::getY() const
 {
-    return y;
+    return y_;
 }
 double Block::distance(const Block& target)
 {
@@ -42,27 +42,31 @@ double Block::distance(const Block& target)
 
     return sqrt(delta);
 }
-void Block::move(direction where)
+void Block::step(Direction where)
 {
     switch (where){
     case up :
-        y++;
+        y_++;
         break;
     case down :
-        y--;
+        y_--;
         break;
     case left :
-        x--;
+        x_--;
         break;
     case right :
-        x++;
+        x_++;
         break;
     case end :
         break;
     }
 
-    if(mainScene->bant[i]->getX() < 0)mainScene->bant[i]->getX() += WIDTH;
-    if(mainScene->bant[i]->getX() >= WIDTH)mainScene->bant[i]->getX() -= WIDTH;
-    if(mainScene->bant[i]->getY() < 0)mainScene->bant[i]->getY() += HEIGHT;
-    if(mainScene->bant[i]->getY() >= HEIGHT)mainScene->bant[i]->getY() -= HEIGHT;
+    if(x_ < 0)
+        x_ += WIDTH;
+    if(x_ >= WIDTH)
+        x_ -= WIDTH;
+    if(y_ < 0)
+        y_ += HEIGHT;
+    if(y_ >= HEIGHT)
+        y_ -= HEIGHT;
 }

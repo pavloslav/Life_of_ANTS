@@ -1,16 +1,13 @@
 #ifndef FOOD_H
 #define FOOD_H
 
-#include <iostream>
-#include <cmath>
-
 #include "block.h"
 
-class Food : public virtual Block
+class Food : public Block
 {
 public:
         Food();
-        void draw_food();
+        virtual void draw();
         void spawn();
 };
 

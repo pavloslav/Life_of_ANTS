@@ -2,45 +2,44 @@
 #define ANT_H
 
 #include "block.h"
-class Scene;
+class Base;
+class Food;
 
-#define WIDTH 300
-#define HEIGHT 150
-#define BARR 50
-
-class Ant : virtual public Block
+class Ant : public Block
 {
 private:
     double speed;
     double live;
     double speedAtack;
+    Base *home_;
 
 public:
-    static Scene *mainScene;
     int size;
     bool turn;
-    bool invent;
+    bool isCarringFood;
     int startPosX;
     int startPosY;
     int startSize;
-    int direction;
+    Block::Direction direction;
 
-    Ant( int x, int y );
+    Ant( int x, int y, Base *home );
     void setSpeed(double);
     double getSpeed() const;
     void setLive(double);
     double getLive() const;
     void setSpeedatack(double);
     double getSpeedatack() const;
-    virtual void go_home(int i);
-    //virtual void init()=0;
-    virtual void drawSnake(int i)=0;
-    virtual void search(int j);
-    virtual void navig(double* targ, int *ptr , int i);
-    virtual void move(int)=0;
-    //virtual void go()=0;
-    virtual void eject(int i);
-    virtual void eat(int i);
-    virtual void chek(int i);
+    virtual void goHome();
+    virtual void drawSnake()=0;
+    virtual void search();
+    virtual void navig(double value, Food *target );
+    virtual void move()=0;
+    virtual void eject();
+    virtual void eat();
+    virtual void chek();
+    virtual void goTo( Block *target );
+
+    //virtual void deside();
+    //virtual void do();
 };
 #endif // ANT_H

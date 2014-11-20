@@ -17,10 +17,9 @@ public:
     Scene();
     R_ant *rant[20];
     B_ant *bant[20];
-    B_base b_base;
-    R_base r_base;
+    B_base *b_base;
+    R_base *r_base;
     Food* food[20];
-    Block base[WIDTH*HEIGHT];//, b_ant[WIDTH*HEIGHT], r_ant[WIDTH*HEIGHT];
     int delay;
     float scale;
     int winScale;

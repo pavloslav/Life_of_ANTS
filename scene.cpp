@@ -1,6 +1,8 @@
 #include "scene.h"
 #include <GL/glut.h>
 
+Scene *Block::mainScene;
+
 Scene::Scene() :
      delay ( 100 ),
      scale ( 1.0 ),
@@ -8,6 +10,19 @@ Scene::Scene() :
      winPosX ( 200 ),
      winPosY ( 100 )
 {
+    r_base = new R_base( 15,  15);
+    b_base = new B_base(270, 120);
+    for(int i=0;i<20;++i)
+    {
+        bant[i]= new B_ant( rand()%30 + 250,
+                            rand()%30 + 100,
+                            b_base );
+        rant[i]= new R_ant( rand()% 30,
+                            rand()% 30,
+                            r_base);
+        food[i] = new Food();
+    }
+    allFoods();
 }
 
 void Scene::drawField() const
@@ -45,17 +60,17 @@ void Scene::display() const
     drawField();
     for(int i=0;i<20;++i)
     {
-    rant[i]->drawSnake(i);
-    bant[i]->drawSnake(i);
+      rant[i]->drawSnake();
+      bant[i]->drawSnake();
     }
-    r_base.draw();
-    b_base.draw();
-    r_base.print();
-    b_base.print();
+    r_base->draw();
+    b_base->draw();
+    r_base->print();
+    b_base->print();
 
 
    for (int i=0;i<20;i++)
-     m[i]->draw_food();
+     food[i]->draw();
 
    glFlush();
    glutSwapBuffers();
@@ -65,7 +80,7 @@ void Scene::display() const
 void Scene::allFoods()
 {
     for (int i=0;i<20;i++){
-        m[i]->spawn();
+        food[i]->spawn();
     }
 
 }
@@ -75,16 +90,16 @@ void Scene::timer(int)
   display();
   for(int i=0;i<20;++i){
   rant[i]->turn = true;
-  rant[i]->chek(i);
-  rant[i]->move(i);
-  rant[i]->eat(i);
-  rant[i]->eject(i);
+  rant[i]->chek();
+  rant[i]->move();
+  rant[i]->eat();
+  rant[i]->eject();
 
   bant[i]->turn = true;
-  bant[i]->chek(i);
-  bant[i]->move(i);
-  bant[i]->eat(i);
-  bant[i]->eject(i);
+  bant[i]->chek();
+  bant[i]->move();
+  bant[i]->eat();
+  bant[i]->eject();
   }
   glutTimerFunc(50,::timer,0);
 }
