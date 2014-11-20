@@ -55,7 +55,7 @@ void Ant::search()
     Food *closestFood = mainScene->food[0];
     for (int i=1;i<size;++i){     //перераховує масив food[i]
         double currentDistance = distance(*mainScene->food[i]);
-        if(minDistance<currentDistance){
+        if(minDistance>currentDistance){
             minDistance = currentDistance;
             closestFood = mainScene->food[i];
         }
@@ -110,9 +110,9 @@ void Ant::navig( double distance, Food *target )
             direction = Block::end;
             turn = false;
         }
-        else
-            goHome();
+        
     }
+    goTo(target);
 }
 
 void Ant::eat()
