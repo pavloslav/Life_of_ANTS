@@ -12,16 +12,17 @@ private:
     double live;
     double speedAtack;
     Base *home_;
-
-public:
     int size;
     bool turn;
     bool isCarringFood;
     int startPosX;
     int startPosY;
     int startSize;
+
+protected:
     Block::Direction direction;
 
+public:
     Ant( int x, int y, Base *home );
     void setSpeed(double);
     double getSpeed() const;
@@ -30,7 +31,7 @@ public:
     void setSpeedatack(double);
     double getSpeedatack() const;
     virtual void goHome();
-    virtual void drawSnake()=0;
+    virtual void draw()=0;
     virtual void search();
     virtual void navig(double value, Food *target );
     virtual void move()=0;
@@ -40,6 +41,6 @@ public:
     virtual void goTo( Block *target );
 
     //virtual void deside();
-    //virtual void do();
+    virtual void action();
 };
 #endif // ANT_H

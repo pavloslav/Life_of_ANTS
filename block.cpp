@@ -34,7 +34,7 @@ int Block::getY() const
 {
     return y_;
 }
-double Block::distance(const Block& target)
+double Block::distance(const Block& target) const
 {
     double deltaX = getX() - target.getX();
     double deltaY = getY() - target.getY();
@@ -47,26 +47,30 @@ void Block::step(Direction where)
     switch (where){
     case up :
         y_++;
+        if(y_ >= HEIGHT)
+            y_ -= HEIGHT;
         break;
     case down :
         y_--;
+        if(y_ < 0)
+            y_ += HEIGHT;
         break;
     case left :
         x_--;
+        if(x_ < 0)
+            x_ += WIDTH;
         break;
     case right :
         x_++;
+        if(x_ >= WIDTH)
+            x_ -= WIDTH;
         break;
     case end :
         break;
     }
+}
 
-    if(x_ < 0)
-        x_ += WIDTH;
-    if(x_ >= WIDTH)
-        x_ -= WIDTH;
-    if(y_ < 0)
-        y_ += HEIGHT;
-    if(y_ >= HEIGHT)
-        y_ -= HEIGHT;
+bool Block::isOn( const Block& target ) const
+{
+    return ( x_ == target.x_ ) && ( y_ == target.y_ );
 }

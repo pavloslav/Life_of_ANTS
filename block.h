@@ -21,10 +21,11 @@ public:
     int getY() const;
     Block( int x, int y );
     virtual void draw();
-    double distance(const Block& target);
+    double distance(const Block& target) const;
 
     typedef enum{ up, down, left, right, end } Direction;
     void step(Direction where);
+    bool isOn( const Block& target ) const;
 };
 
 #endif // BLOCK_H

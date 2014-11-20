@@ -50,17 +50,17 @@ double Ant::getSpeedatack() const
 
 void Ant::search()
 {
-        int size = 20;
-        int minDistance = distance(*mainScene->food[0]);
-        Food *closestFood = mainScene->food[0];
-        for (int i=1;i<size;++i){     //перераховує масив food[i]
-            double currentDistance = distance(*mainScene->food[i]);
-            if(minDistance<currentDistance){
-                minDistance = currentDistance;
-                closestFood = mainScene->food[i];
-            }
+    int size = 20;
+    int minDistance = distance(*mainScene->food[0]);
+    Food *closestFood = mainScene->food[0];
+    for (int i=1;i<size;++i){     //перераховує масив food[i]
+        double currentDistance = distance(*mainScene->food[i]);
+        if(minDistance<currentDistance){
+            minDistance = currentDistance;
+            closestFood = mainScene->food[i];
         }
-        navig( minDistance, closestFood );
+    }
+    navig( minDistance, closestFood );
 }
 
 
@@ -115,10 +115,11 @@ void Ant::navig( double distance, Food *target )
     }
 }
 
-void Ant::eat(){
+void Ant::eat()
+{
     for(int i=0;i<20;++i)
     {
-        if((getX() == mainScene->food[i]->getX())&&(getY() == mainScene->food[i]->getY()))
+        if( isOn( *mainScene->food[ i ] ) )
         {
             isCarringFood=true;
             mainScene->food[i]->spawn();
@@ -128,11 +129,14 @@ void Ant::eat(){
 
 void Ant::chek()
 {
-    if (isCarringFood){
+    if (isCarringFood)
+    {
         goHome();
     }
     else
+    {
         search();
+    }
 }
 
 void Ant::goHome()
@@ -142,10 +146,18 @@ void Ant::goHome()
 
 void Ant::eject()
 {
-    if((isCarringFood)&&((getX() == home_->getX())&&(getY() == home_->getY())))
+    if( (isCarringFood)&&( isOn( *home_ ) ) )
     {
         isCarringFood=false;
         home_->score++;
     }
 }
 
+void Ant::action()
+{
+    turn = true;
+    chek();
+    move();
+    eat();
+    eject();
+}

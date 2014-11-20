@@ -7,7 +7,7 @@ B_ant::B_ant( int x, int y, Base *base ) : Ant( x, y, base )
 }
 
 
-void B_ant::drawSnake()
+void B_ant::draw()
 {
     glColor3f(0.0, 0.0, 0.0);
     glRectf(getX() * 1, getY() * 1, (getX() + 0.9) * 1, (getY() + 0.9) * 1);

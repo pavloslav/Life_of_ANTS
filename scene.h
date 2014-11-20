@@ -36,5 +36,4 @@ public:
     void timer(int = 0);
 };
 
-void search(Block* ant, int j,Food* m);
 #endif // SCENE_H

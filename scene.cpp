@@ -55,13 +55,13 @@ void display();
 void Scene::display() const
 {
 
-     glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     drawField();
     for(int i=0;i<20;++i)
     {
-      rant[i]->drawSnake();
-      bant[i]->drawSnake();
+      rant[i]->draw();
+      bant[i]->draw();
     }
     r_base->draw();
     b_base->draw();
@@ -79,7 +79,8 @@ void Scene::display() const
 
 void Scene::allFoods()
 {
-    for (int i=0;i<20;i++){
+    for (int i=0;i<20;i++)
+    {
         food[i]->spawn();
     }
 
@@ -89,17 +90,8 @@ void Scene::timer(int)
 {
   display();
   for(int i=0;i<20;++i){
-  rant[i]->turn = true;
-  rant[i]->chek();
-  rant[i]->move();
-  rant[i]->eat();
-  rant[i]->eject();
-
-  bant[i]->turn = true;
-  bant[i]->chek();
-  bant[i]->move();
-  bant[i]->eat();
-  bant[i]->eject();
+    rant[i]->action();
+    bant[i]->action();
   }
   glutTimerFunc(50,::timer,0);
 }

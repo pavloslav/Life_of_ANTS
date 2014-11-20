@@ -7,7 +7,7 @@ class B_ant: public  Ant
 {
 public:
     B_ant( int x, int y, Base* base );
-    virtual void drawSnake();
+    virtual void draw();
     virtual void move();
 };
 

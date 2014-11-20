@@ -8,8 +8,7 @@ class R_ant: public Ant
 public:
     R_ant( int x, int y, Base *base );
     virtual void move();
-    //virtual void cut();
-    virtual void drawSnake();
+    virtual void draw();
 };
 
 
