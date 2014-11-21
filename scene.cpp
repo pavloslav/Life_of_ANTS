@@ -1,26 +1,31 @@
 #include "scene.h"
 #include <GL/glut.h>
+#include "colony.h"
 
 Scene *Block::mainScene;
 
 Scene::Scene() :
-     delay ( 100 ),
-     scale ( 1.0 ),
-     winScale ( 5 ),
-     winPosX ( 200 ),
-     winPosY ( 100 )
+    black( 0.0, 0.0, 0.0,  15, 180 ),
+    red  ( 1.0, 0.0, 0.0, 280, 180 ),
+    delay ( 100 ),
+    scale ( 1.0 ),
+    winScale ( 5 ),
+    winPosX ( 200 ),
+    winPosY ( 100 )
 {
-    r_base = new R_base( 15,  15);
-    b_base = new B_base(270, 120);
+    colonies.push_back( &black );
+    colonies.push_back( &red );
+    new Base( 15,  15, &red);
+    new Base(270, 120, &black);
     for(int i=0;i<20;++i)
     {
-        bant[i]= new B_ant( rand()%30 + 250,
-                            rand()%30 + 100,
-                            b_base );
-        rant[i]= new R_ant( rand()% 30,
-                            rand()% 30,
-                            r_base);
-        food[i] = new Food();
+        new Ant( rand()%30 + 250,
+                 rand()%30 + 100,
+                 &black );
+        new Ant( rand()% 30,
+                 rand()% 30,
+                 &red );
+        food.push_back( new Food() );
     }
     allFoods();
 }
@@ -45,7 +50,6 @@ void Scene::drawBar() const
      for (int j=0; j<HEIGHT; j+=scale)
        {glVertex2f(0,j); glVertex2f(WIDTH,j);}
      glEnd();
-
 }
 
 void keyboard(unsigned char key, int , int );
@@ -54,27 +58,20 @@ void display();
 
 void Scene::display() const
 {
-
     glClear(GL_COLOR_BUFFER_BIT);
 
     drawField();
-    for(int i=0;i<20;++i)
+    for(unsigned int i=0;i<colonies.size();++i)
     {
-      rant[i]->draw();
-      bant[i]->draw();
+        colonies[i]->draw();
     }
-    r_base->draw();
-    b_base->draw();
-    r_base->print();
-    b_base->print();
-
-
-   for (int i=0;i<20;i++)
-     food[i]->draw();
-
-   glFlush();
-   glutSwapBuffers();
-   glutPostOverlayRedisplay();
+    for (unsigned int i=0;i<food.size();i++)
+    {
+        food[i]->draw();
+    }
+    glFlush();
+    glutSwapBuffers();
+    glutPostOverlayRedisplay();
 }
 
 void Scene::allFoods()
@@ -90,8 +87,8 @@ void Scene::timer(int)
 {
   display();
   for(int i=0;i<20;++i){
-    rant[i]->action();
-    bant[i]->action();
+    red.ants[i]->action();
+    black.ants[i]->action();
   }
   glutTimerFunc(50,::timer,0);
 }
@@ -109,3 +106,7 @@ void Scene::keyboard(unsigned char key )
     }
 
 }
+
+
+
+
