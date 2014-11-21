@@ -1,6 +1,6 @@
 #include <ctime>
 #include <cstdlib>
-#include <GL\glut.h>
+#include <GL/glut.h>
 
 #include "scene.h"
 #include "block.h"

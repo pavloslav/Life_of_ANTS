@@ -1,4 +1,4 @@
-#include "ant.h"
+﻿#include "ant.h"
 #include "scene.h"
 #include "food.h"
 #include "base.h"
@@ -60,8 +60,8 @@ void Ant::search()
     int minDistance = distance( mainScene->food[0] );
     Food *closestFood = mainScene->food[0];
     for (int i=1;i<size;++i){     //перераховує масив food[i]
-        double currentDistance = distance( mainScene->food[i] );
-        if(minDistance<currentDistance){
+        double currentDistance = distance(*mainScene->food[i]);
+        if(minDistance>currentDistance){
             minDistance = currentDistance;
             closestFood = mainScene->food[i];
         }
@@ -116,9 +116,9 @@ void Ant::navig( double distance, Food *target )
             direction = Block::end;
             turn = false;
         }
-        else
-            goHome();
+        
     }
+    goTo(target);
 }
 
 void Ant::eat()
