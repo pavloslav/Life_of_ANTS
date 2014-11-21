@@ -59,9 +59,11 @@ void Ant::search()
     int size = 20;
     int minDistance = distance( mainScene->food[0] );
     Food *closestFood = mainScene->food[0];
-    for (int i=1;i<size;++i){     //перераховує масив food[i]
-        double currentDistance = distance(mainScene->food[i]);
-        if(minDistance>currentDistance){
+    for (int i=1;i<size;++i)
+    {     //перераховує масив food[i]
+        double currentDistance = distance( mainScene->food[i] );
+        if(minDistance>currentDistance)
+        {
             minDistance = currentDistance;
             closestFood = mainScene->food[i];
         }
