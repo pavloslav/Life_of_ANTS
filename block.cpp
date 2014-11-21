@@ -8,7 +8,7 @@ Block::Block( int x, int y ) :
 {
 }
 
-void Block::draw()
+void Block::draw() const
 {
     glColor3f(0.0,1.0,0.0);
     glVertex2f(x_*mainScene->scale,y_*mainScene->scale);
@@ -73,4 +73,27 @@ void Block::step(Direction where)
 bool Block::isOn( Block* target ) const
 {
     return ( x_ == target->x_ ) && ( y_ == target->y_ );
+}
+
+Block* Block::nearest( const std::vector<Block*>& vect )
+{
+    if( vect.size() == 0 )
+    {
+        return NULL;
+    }
+    Block* nearest = vect[0];
+    if( vect.size() > 1 )
+    {
+        double minDistance = distance( nearest );
+        for(unsigned int i = 1; i < vect.size(); ++i )
+        {
+            double current = distance( vect[i] );
+            if( current < minDistance)
+            {
+                minDistance = current;
+                nearest = vect[ i ];
+            }
+        }
+    }
+    return nearest;
 }

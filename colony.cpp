@@ -12,7 +12,7 @@ Colony::Colony(float r, float g, float b, int scoreX, int scoreY) :
 {
 }
 
-Base* Colony::nearestBase( Ant *who )
+/*Base* Colony::nearestBase( Ant *who )
 {
     Base* nearest = bases[0];
     double minDistance = who->distance( nearest );
@@ -26,14 +26,13 @@ Base* Colony::nearestBase( Ant *who )
         }
     }
     return nearest;
-}
+}*/
 
-void Colony::draw()
+void Colony::draw() const
 {
     for(unsigned int i=0;i<bases.size();++i)
     {
         bases[i]->draw();
-        bases[i]->print();
     }
     for(unsigned int i=0;i<ants.size();++i)
     {

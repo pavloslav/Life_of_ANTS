@@ -15,7 +15,7 @@ class Scene
 {
 public:
     Scene();
-    std::vector< Food * > food;
+    std::vector< Block * > food;
     std::vector< Colony * > colonies;
     Colony black, red;
     int delay;
@@ -32,7 +32,7 @@ public:
     void allFoods();
     void keyboard(unsigned char key);
     void timer(int = 0);
-    Base* nearestBase( ColonyBlock *who );
+    //Food* nearestFood( Block *who );
 };
 
 #endif // SCENE_H

@@ -1,6 +1,7 @@
 #include "scene.h"
 #include <GL/glut.h>
 #include "colony.h"
+#include "food.h"
 
 Scene *Block::mainScene;
 
@@ -78,7 +79,7 @@ void Scene::allFoods()
 {
     for (int i=0;i<20;i++)
     {
-        food[i]->spawn();
+        dynamic_cast<Food*>(food[i])->spawn();
     }
 
 }
@@ -104,5 +105,20 @@ void Scene::keyboard(unsigned char key )
     default:
         break;
     }
-
 }
+
+/*Food* Scene::nearestFood( Block *who )
+{
+    Food* nearest = food[0];
+    double minDistance = who->distance( nearest );
+    for(unsigned int i = 1; i < food.size(); ++i )
+    {
+        double current = who->distance( food[i] );
+        if( current < minDistance)
+        {
+            minDistance = current;
+            nearest = food[ i ];
+        }
+    }
+    return nearest;
+}*/

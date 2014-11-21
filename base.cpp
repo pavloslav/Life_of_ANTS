@@ -21,6 +21,7 @@ void Base::draw() const
     glVertex2f( getX() - mainScene->scale, getY());
     glVertex2f( getX(), getY() - mainScene->scale);
     glEnd();
+    print();
 }
 
 void Base::print() const

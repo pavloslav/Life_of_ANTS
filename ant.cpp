@@ -13,7 +13,6 @@ Ant::Ant( int x, int y, Colony *col ) : ColonyBlock( x, y, col ),
     live( 100 ),
     speedAtack( 1 ),
     size( 1 ),
-    turn( false ),
     isCarringFood( false ),
     startPosX ( WIDTH / 6 ),
     startPosY ( HEIGHT / 6 ),
@@ -54,122 +53,69 @@ double Ant::getSpeedatack() const
     return speedAtack;
 }
 
-void Ant::search()
+
+void Ant::turnTo(Block *target)
 {
-    int size = 20;
-    int minDistance = distance( mainScene->food[0] );
-    Food *closestFood = mainScene->food[0];
-    for (int i=1;i<size;++i)
-    {     //перераховує масив food[i]
-        double currentDistance = distance( mainScene->food[i] );
-        if(minDistance>currentDistance)
-        {
-            minDistance = currentDistance;
-            closestFood = mainScene->food[i];
-        }
-    }
-    navig( minDistance, closestFood );
-}
-
-
-void Ant::goTo(Block *target)
-{
-    if (getY()<target->getY()){// верх
-        if((direction != Block::down)&&(turn))
-        {
-            direction = Block::up;
-            turn = false;
-        }
-    }
-    if (getY()>target->getY()){ //низ
-        if((direction != Block::up)&&(turn))
-        {
-            direction = Block::down;
-            turn = false;
-        }
-    }
-    if (getX()<target->getX()){// вправо
-        if((direction != Block::left)&&(turn))
-        {
-            direction = Block::right;
-            turn = false;
-        }
-    }
-    if (getX()>target->getX()){//ліво
-        if((direction != Block::right)&&(turn))
-        {
-            direction = Block::left;
-            turn = false;
-        }
-
-    }
-}
-
-void Ant::navig( double distance, Food *target )
-{
-    if(distance<=50)
+    if ( (getY()<target->getY() ) && ( direction != Block::down ) )
     {
-        goTo(target);
+        direction = Block::up;
     }
-    if(distance>=50)
+    else if ( (getY()>target->getY()) && (direction != Block::up) )
     {
-        if((rand()% 3)<2)
-        {
-            direction = Block::end;
-            turn = false;
-        }
-        
+        direction = Block::down;
     }
-    goTo(target);
-}
+    else if ( (getX()<target->getX()) && (direction != Block::left) )
+    {
+        direction = Block::right;
+    }
+    else if ( (getX()>target->getX()) && (direction != Block::right) )
+    {
+        direction = Block::left;
+    }
 
-void Ant::eat()
-{
-    for(int i=0;i<20;++i)
-    {
-        if( isOn( mainScene->food[ i ] ) )
-        {
-            isCarringFood=true;
-            mainScene->food[i]->spawn();
-        }
-    }
-}
-
-void Ant::chek()
-{
-    if (isCarringFood)
-    {
-        goHome();
-    }
-    else
-    {
-        search();
-    }
-}
-
-void Ant::goHome()
-{
-    //goTo( home_ );
-    goTo( getColony()->nearestBase( this ) );
-}
-
-void Ant::eject()
-{
-    Base *home = getColony()->nearestBase( this );
-    if( ( isCarringFood )&&( isOn( home ) ) )
-    {
-        isCarringFood=false;
-        getColony()->score++;
-    }
 }
 
 void Ant::action()
-{
-    turn = true;
-    chek();
+{   
+    switch( state )
+    {
+    case idle :
+        target = nearest( mainScene->food );
+        if( distance(target) < 50 )
+            state = goingToFood;
+        else
+            target = NULL;
+        break;
+
+    case goingToFood :
+        if( (rand()% 10)==0 )//раз на 10 кроків "забуваємо", що робили, щоб перевірити, де їжа
+        {
+            state = idle;
+        }
+        else
+        {
+            if( isOn(target) )
+            {
+                dynamic_cast<Food*>(target)->spawn();
+                target = nearest( getColony()->bases );
+                state = carringFoodHome;
+            }
+        }
+        break;
+
+    case carringFoodHome :
+        if( isOn(target) )
+        {
+            getColony()->score++;
+            state = idle;
+            target = NULL;
+        }
+        break;
+
+    }
+    if(target)
+        turnTo( target );
     step(direction);
-    eat();
-    eject();
 }
 
 void Ant::draw()

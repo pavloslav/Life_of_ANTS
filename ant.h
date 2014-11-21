@@ -17,23 +17,16 @@ public:
     double getLive() const;
     void setSpeedatack(double);
     double getSpeedatack() const;
-    virtual void goHome();
-    virtual void draw();
-    virtual void search();
-    virtual void navig(double value, Food *target );
-    virtual void eject();
-    virtual void eat();
-    virtual void chek();
-    virtual void goTo( Block *target );
+    virtual void draw() const;
+    virtual void turnTo( Block *target );
     virtual void action();
-    enum State {idle, goingToFood, goingHome, fighting};
+    enum State {idle, goingToFood, carringFoodHome};
 
 private:
     double speed;
     double live;
     double speedAtack;
     int size;
-    bool turn;
     bool isCarringFood;
     int startPosX;
     int startPosY;

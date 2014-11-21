@@ -1,3 +1,5 @@
+#include <vector>
+
 #ifndef BLOCK_H
 #define BLOCK_H
 
@@ -8,10 +10,6 @@
 class Scene;
 
 class Block {
-private:
-    int x_;
-    int y_;
-
 public:
     static Scene *mainScene;
 
@@ -20,12 +18,18 @@ public:
     void setY( int y );
     int getY() const;
     Block( int x, int y );
-    virtual void draw();
+    virtual void draw() const;
     double distance(Block* target) const;
 
     enum Direction{ up, down, left, right, end } ;
     void step(Direction where);
     bool isOn( Block* target ) const;
+
+    Block* nearest( const std::vector<Block*>& vect );
+
+private:
+    int x_;
+    int y_;
 };
 
 #endif // BLOCK_H
