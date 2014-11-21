@@ -106,7 +106,3 @@ void Scene::keyboard(unsigned char key )
     }
 
 }
-
-
-
-

@@ -18,7 +18,9 @@ Ant::Ant( int x, int y, Colony *col ) : ColonyBlock( x, y, col ),
     startPosX ( WIDTH / 6 ),
     startPosY ( HEIGHT / 6 ),
     startSize( 1 ),
-    direction( right )
+    direction( right ),
+    state( idle ),
+    target( NULL )
 {
     getColony()->ants.push_back( this );
 }

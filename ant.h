@@ -25,9 +25,9 @@ public:
     virtual void eat();
     virtual void chek();
     virtual void goTo( Block *target );
-
-    //virtual void deside();
     virtual void action();
+    enum State {idle, goingToFood, goingHome, fighting};
+
 private:
     double speed;
     double live;
@@ -38,8 +38,8 @@ private:
     int startPosX;
     int startPosY;
     int startSize;
-
-protected:
     Block::Direction direction;
+    State state;
+    Block *target;
 };
 #endif // ANT_H

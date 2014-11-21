@@ -23,7 +23,7 @@ public:
     virtual void draw();
     double distance(Block* target) const;
 
-    typedef enum{ up, down, left, right, end } Direction;
+    enum Direction{ up, down, left, right, end } ;
     void step(Direction where);
     bool isOn( Block* target ) const;
 };
