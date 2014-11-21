@@ -11,7 +11,7 @@ Colony::Colony(float r, float g, float b, int scoreX, int scoreY) :
     scorePosY( scoreY )
 {
 }
-
+/*
 Base* Colony::nearestBase( Ant *who )
 {
     Base* nearest = bases[0];
@@ -40,3 +40,4 @@ void Colony::draw()
         ants[i]->draw();
     }
 }
+*/
