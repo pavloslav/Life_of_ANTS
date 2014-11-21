@@ -15,8 +15,7 @@ public:
     int scorePosX, scorePosY;
     std::vector< Base * > bases;
     std::vector< Ant * > ants;
-    void draw();
-
+    virtual void draw();
 };
 
 #endif // COLONY_H

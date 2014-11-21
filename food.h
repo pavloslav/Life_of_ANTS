@@ -1,15 +1,14 @@
 #ifndef FOOD_H
 #define FOOD_H
-#include <time.h>
-#include <stdlib.h>
 
-class Food 
+#include "block.h"
+
+class Food : public Block
 {
 public:
-	int x;
-	int y;
         Food();
-		void spawn(int WIDTH, int HEIGHT);
+        virtual void draw();
+        void spawn();
 };
 
 #endif // FOOD_H
