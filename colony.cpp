@@ -1,21 +1,36 @@
 #include "colony.h"
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 #include <sstream>
+#include <algorithm>
 
 #include "ant.h"
 #include "scene.h"
+#include "base.h"
 
-Colony::Colony( Scene * scene, int r, int g, int b, int scoreX, int scoreY ) :
+Colony::Colony( Scene * scene, Color col, int scoreX, int scoreY ) :
     mainScene( scene ),
     score( 0.0 ),
-    red( r ),
-    green( g ),
-    blue( b ),
+    color( col ),
     scorePosX( scoreX ),
     scorePosY( scoreY )
 {
+    SDL_assert_release( mainScene != NULL );
+    mainScene->colonies.push_back( this );
+}
+
+Colony::~Colony()
+{
+    for(int i = ants.size() - 1; i >= 0; --i)
+    {
+        delete ants[i];
+    }
+    SDL_assert_release( ants.size() == 0 );
+    for(int i = bases.size() - 1; i >= 0; --i)
+    {
+        delete bases[i];
+    }
+    SDL_assert_release( bases.size() == 0 );
+    mainScene->forgetColony( this );
 }
 
 void Colony::draw()
@@ -33,27 +48,20 @@ void Colony::draw()
 
 void Colony::print()
 {
-    SetSDLColor( mainScene->graphics->canvas );
-    SDL_Color col;
-    col.b = blue;
-    col.r = red;
-    col.g = green;
-    std::string sc;
+    mainScene->graphics->setColor( color );
     std::stringstream ss;
     ss << score;
-    ss >> sc;
-    SDL_Surface* text=TTF_RenderText_Blended(mainScene->graphics->font,sc.c_str(),col);
-    SDL_Rect src = text->clip_rect, tgt;
-    tgt.x = scorePosX;
-    tgt.y = scorePosY;
-    tgt.h = src.h;
-    tgt.w = src.w;
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(mainScene->graphics->canvas, text);
-    SDL_assert_release( texture!= NULL );
-    SDL_RenderCopy(mainScene->graphics->canvas, texture, &src, &tgt);
+    mainScene->graphics->outText( scorePosX, scorePosY, ss.str().c_str(), color );
 }
 
-void Colony::SetSDLColor( SDL_Renderer* canvas )
+void Colony::forgetBase(Block *what)
 {
-    SDL_SetRenderDrawColor( canvas, red, green, blue, 255 );
+    SDL_assert_release( what != NULL );
+    bases.erase( std::remove( bases.begin(), bases.end(), what ), bases.end() );
+}
+
+void Colony::forgetAnt(Block *what)
+{
+    SDL_assert_release( what != NULL );
+    ants.erase( std::remove( ants.begin(), ants.end(), what ), ants.end() );
 }

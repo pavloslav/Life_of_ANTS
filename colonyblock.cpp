@@ -6,6 +6,10 @@ ColonyBlock::ColonyBlock( int x, int y, Colony *col ) :
 {
 }
 
+ColonyBlock::~ColonyBlock()
+{
+}
+
 Colony *ColonyBlock::getColony() const
 {
     return colony;

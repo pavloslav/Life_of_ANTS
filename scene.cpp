@@ -2,40 +2,59 @@
 #include "colony.h"
 #include "food.h"
 #include "ant.h"
+#include "graphics.h"
+
 #include <SDL2/SDL.h>
+#include <algorithm>
 
 Scene *Block::mainScene;
 
-Scene::Scene(Graphics *gr) :
-    black( this,   0, 0, 0,  15, 10 ),
-    red  ( this, 255, 0, 0, 300, 10 ),
-    delay ( 100 ),
-    scale ( 1.0 ),
-    winScale ( 5 ),
-    winPosX ( 200 ),
-    winPosY ( 100 ),
+Scene::Scene(Graphics *gr, int w, int h) :
+    fieldWidth( w ),
+    fieldHeight( h ),
     quit(false),
-    graphics( gr )
+    graphics( gr ),
+    foodColor( ColorBlue ),
+    dying( false )
 {
-    colonies.push_back( &black );
-    colonies.push_back( &red );
-    new Base( 15,  15, &red);
-    new Base( FIELD_WIDTH - 15, FIELD_HEIGHT-15, &black);
-    for(int i=0;i<20;++i)
+    Block::mainScene = this;
+    Colony *red   = new Colony( this, ColorRed  , 300, 10 ),
+           *black = new Colony( this, ColorBlack,  15, 10 );
+    new Base( 15,  15, red);
+    new Base( FIELD_WIDTH - 15, FIELD_HEIGHT - 15, black);
+    for(int i=0;i<1000;++i)
     {
-        new Ant( rand()%30 + 150,
-                 rand()%30 + 150,
-                 &black );
-        new Ant( rand()% 30,
-                 rand()% 30,
-                 &red );
-        food.push_back( new Food() );
+        new Ant( rand() % 31 - 15 + black->bases[0]->getX(),
+                 rand() % 31 - 15 + black->bases[0]->getY(),
+                 black );
+        new Ant( rand() % 31 - 15 + red->bases[0]->getX(),
+                 rand() % 31 - 15 + red->bases[0]->getY(),
+                 red );
+        new Food();
     }
-    allFoods();
 }
 
 Scene::~Scene()
 {
+  dying = true;
+  for( int i = food.size() - 1; i >= 0; --i )
+      delete food[i];
+  for( int i = colonies.size() - 1; i >= 0; --i )
+      delete colonies[i];
+}
+
+void Scene::forgetFood( Food *what )
+{
+    SDL_assert_release( what != NULL );
+    food.erase( std::remove( food.begin(), food.end(), what ), food.end() );
+    if( !dying )
+        new Food();
+}
+
+void Scene::forgetColony(Colony *what)
+{
+    SDL_assert_release( what != NULL );
+    colonies.erase( std::remove( colonies.begin(), colonies.end(), what ), colonies.end() );
 }
 
 void Scene::drawField()
@@ -52,7 +71,7 @@ void Scene::drawField()
 void Scene::processEvents()
 {
     SDL_Event Event;
-    while(SDL_PollEvent(&Event))
+    while( SDL_PollEvent( &Event ) )
     {
         switch( Event.type )
         {
@@ -63,22 +82,28 @@ void Scene::processEvents()
             if( Event.key.keysym.sym == SDLK_z )
                 allFoods();
             break;
+        default:
+            break;
         }
     }
 }
 
 void Scene::action()
 {
-    for(int i=0;i<20;++i){
-      red.ants[i]->action();
-      black.ants[i]->action();
+    for( unsigned int colonyNum = 0; colonyNum < colonies.size(); ++colonyNum )
+    {
+        for( unsigned int antNum = 0; antNum < colonies[colonyNum]->ants.size(); ++antNum )
+        {
+            colonies[colonyNum]->ants[antNum]->action();
+        }
     }
 }
 
 void Scene::draw()
 {
-    SDL_SetRenderDrawColor( graphics->canvas, 255, 255, 128, 255 );
-    SDL_RenderClear( graphics->canvas );
+    graphics->setColor( ColorLightYellow );
+    int result = SDL_RenderClear( graphics->renderer );
+    SDL_assert_release( result >= 0 );
     drawField();
     for(unsigned int i=0;i<colonies.size();++i)
     {
@@ -88,14 +113,14 @@ void Scene::draw()
     {
         food[i]->draw();
     }
-    SDL_RenderPresent( graphics->canvas );
+    SDL_RenderPresent( graphics->renderer );
 }
 
 void Scene::allFoods()
 {
-    for (int i=0;i<20;i++)
+    for ( unsigned int i = 0; i < food.size(); ++i )
     {
-        dynamic_cast<Food*>(food[i])->spawn();
+        delete food[0];
     }
 
 }

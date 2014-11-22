@@ -3,23 +3,26 @@
 #include "scene.h"
 
 Base::Base( int x, int y, Colony *col ) :
-    ColonyBlock( x, y, col ),
-    size( 1 ),
-    startPosX( x ),
-    startPosY( y )
+    ColonyBlock( x, y, col )
 {
+    SDL_assert_release( col != NULL );
     getColony()->bases.push_back( this );
+}
+
+Base::~Base()
+{
+    getColony()->forgetBase( this );
 }
 
 void Base::draw()
 {
-    getColony()->SetSDLColor( mainScene->graphics->canvas );
+    mainScene->graphics->setColor( getColony()->color );
     SDL_Point points[5];
     points[0] = Graphics::point( getX() + 1, getY()     );
     points[1] = Graphics::point( getX(),     getY() + 1 );
     points[2] = Graphics::point( getX() - 1, getY()     );
     points[3] = Graphics::point( getX(),     getY() - 1 );
     points[4] = points[0];
-    SDL_RenderDrawLines( mainScene->graphics->canvas, points, 5 );
+    SDL_RenderDrawLines( mainScene->graphics->renderer, points, 5 );
 }
 

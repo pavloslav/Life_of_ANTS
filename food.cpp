@@ -3,20 +3,20 @@
 #include "scene.h"
 #include "graphics.h"
 
-Food::Food() : Block( (rand()%FIELD_WIDTH), (rand()%FIELD_HEIGHT))
+Food::Food() :
+    Block( rand() % mainScene->fieldWidth, rand() % mainScene->fieldHeight )
 {
+    mainScene->food.push_back( this );
+}
+
+Food::~Food()
+{
+    mainScene->forgetFood( this );
 }
 
 void Food::draw()
 {
-    SDL_SetRenderDrawColor( mainScene->graphics->canvas, 0, 0, 255, 255 );
-    SDL_Rect rect = Graphics::rect( getX(), getY(), 0.9, 0.9 );
-    SDL_RenderDrawRect( mainScene->graphics->canvas, &rect );
+    mainScene->graphics->setColor( mainScene->foodColor );
+    SDL_Rect rect = Graphics::rect( getX(), getY(), 1.3, 1.3 );
+    SDL_RenderDrawRect( mainScene->graphics->renderer, &rect );
 }
-
-void Food::spawn()
-{
-    setX((rand()%FIELD_WIDTH));
-    setY((rand()%FIELD_HEIGHT));
-}
-

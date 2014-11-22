@@ -10,18 +10,33 @@
 #define WINDOW_WIDTH  ( BLOCK_SIZE * FIELD_WIDTH )
 #define WINDOW_HEIGHT ( HEADER_SIZE + ( BLOCK_SIZE * FIELD_HEIGHT ) )
 
+struct Color : public SDL_Color
+{
+    Color( Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha = 255 );
+};
+
 class Graphics
 {
 public:
     Graphics(const char *title, int width, int height);
     ~Graphics();
     static SDL_Point point( float x, float y );
-    static SDL_Rect rect(float x, float y, float w , float h);
+    static SDL_Rect rect( float x, float y, float w , float h );
+    void setColor( const Color &color );
+    void outText(int x, int y, const char *text , Color col);
 
     int error;
     SDL_Window* window;
-    SDL_Renderer* canvas;
+    SDL_Renderer* renderer;
     TTF_Font* font;
 };
+
+
+
+const Color ColorBlack      ( 0, 0, 0 ),
+            ColorRed        ( 255, 0, 0),
+            ColorBlue       ( 0, 0, 255 ),
+            ColorLightYellow( 255, 255, 128 );
+
 
 #endif // GRAPHICS_H

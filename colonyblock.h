@@ -8,8 +8,10 @@ class ColonyBlock : public Block
 {
 public:
     ColonyBlock( int x, int y, Colony *col);
+    virtual ~ColonyBlock();
     Colony *getColony() const;
     virtual void draw() = 0;
+
 private:
     Colony *colony;
 };

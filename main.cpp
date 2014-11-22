@@ -9,7 +9,7 @@
 #include "block.h"
 #include "graphics.h"
 
-#define VERSION "0.010"
+#define VERSION "0.012"
 
 using namespace std;
 
@@ -21,13 +21,17 @@ int main(void)
 
     Graphics gr( "Ants " VERSION, WINDOW_WIDTH, WINDOW_HEIGHT );
 
-    Block::mainScene = new Scene( &gr );
+    new Scene( &gr, FIELD_WIDTH, FIELD_HEIGHT );
+    SDL_assert_release( Block::mainScene != NULL );
     while( !Block::mainScene->quit )
     {
+        Uint32 startProcessing = SDL_GetTicks();
         Block::mainScene->processEvents();
         Block::mainScene->action();
         Block::mainScene->draw();
-        SDL_Delay(50);
+        Uint32 timeProcessing = SDL_GetTicks() - startProcessing;
+        if( timeProcessing < 50 )
+            SDL_Delay(50 - timeProcessing);
     }
     delete Block::mainScene;
     return 0;

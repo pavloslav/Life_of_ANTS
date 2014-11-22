@@ -9,11 +9,9 @@ class Base : public ColonyBlock
 {
 public:
     Base( int x, int y, Colony *col );
+    virtual ~Base();
     virtual void draw();
 private:
-    int size;
-    int startPosX;
-    int startPosY;
 };
 
 #endif // BASE_H

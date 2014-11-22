@@ -2,26 +2,30 @@
 #define COLONY_H
 
 #include <vector>
-#include "block.h"
-#include "base.h"
-#include <SDL2/SDL.h>
 
+#include "block.h"
+#include "graphics.h"
+
+class Base;
 class Scene;
 class Ant;
 
 class Colony
 {
 public:
-    Colony( Scene* scene, int r, int g, int b, int scoreX, int scoreY );
+    Colony(Scene* scene, Color col, int scoreX, int scoreY );
+    virtual ~Colony();
+
     Scene* mainScene;
     double score;
-    int red, green, blue;//color of the colony
+    Color color;
     int scorePosX, scorePosY;
     std::vector< Block * > bases;
     std::vector< Ant * > ants;
     virtual void draw();
     virtual void print();
-    void SetSDLColor( SDL_Renderer* canvas );
+    virtual void forgetBase( Block *what );
+    virtual void forgetAnt( Block *what );
 };
 
 #endif // COLONY_H

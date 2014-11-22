@@ -1,10 +1,9 @@
 #include "graphics.h"
-#include <SDL2/SDL.h>
 
 Graphics::Graphics( const char *title, int width, int height ) :
     error( 0 ),
     window( NULL ),
-    canvas( NULL )
+    renderer( NULL )
 {
     int initResult = SDL_Init( SDL_INIT_VIDEO );
     SDL_assert_release( initResult >= 0 );
@@ -15,8 +14,8 @@ Graphics::Graphics( const char *title, int width, int height ) :
                                0 );
     SDL_assert_release( window != NULL );
 
-    canvas = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
-    SDL_assert_release( canvas != NULL );
+    renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
+    SDL_assert_release( renderer != NULL );
 
     int ttfInitResult = TTF_Init();
     SDL_assert_release( ttfInitResult >= 0 );
@@ -27,7 +26,6 @@ Graphics::Graphics( const char *title, int width, int height ) :
 
 Graphics::~Graphics()
 {
-    TTF_CloseFont( font );
     TTF_Quit();
     SDL_Quit();
 }
@@ -48,4 +46,35 @@ SDL_Rect Graphics::rect( float x, float y, float w, float h )
     transformed.w = w * BLOCK_SIZE;
     transformed.h = h * BLOCK_SIZE;
     return transformed;
+}
+
+void Graphics::setColor( const Color &color )
+{
+    SDL_SetRenderDrawColor( renderer, color.r, color.g, color.b, color.a );
+}
+
+void Graphics::outText( int x, int y, const char *text, Color col )
+{
+    SDL_Surface* textSurface =
+            TTF_RenderText_Blended( font, text, col );
+    SDL_Rect src = textSurface->clip_rect,
+             tgt;
+    tgt.x = x;
+    tgt.y = y;
+    tgt.h = src.h;
+    tgt.w = src.w;
+    SDL_Texture *texture =
+            SDL_CreateTextureFromSurface( renderer, textSurface );
+    SDL_FreeSurface( textSurface );
+    SDL_assert_release( texture!= NULL );
+    SDL_RenderCopy( renderer, texture, &src, &tgt);
+    SDL_DestroyTexture( texture );
+}
+
+Color::Color( Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha )
+{
+    r = red;
+    g = green;
+    b = blue;
+    a = alpha;
 }

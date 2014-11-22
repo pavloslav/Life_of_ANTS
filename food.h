@@ -6,9 +6,9 @@
 class Food : public Block
 {
 public:
-        Food();
-        virtual void draw();
-        void spawn();
+    Food();
+    virtual ~Food();
+    virtual void draw();
 };
 
 #endif // FOOD_H

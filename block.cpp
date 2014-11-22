@@ -2,9 +2,14 @@
 #include "scene.h"
 #include "graphics.h"
 #include <cmath>
+#include <algorithm>
 
 Block::Block( int x, int y ) :
     x_(x), y_(y)
+{
+}
+
+Block::~Block()
 {
 }
 
@@ -26,46 +31,85 @@ int Block::getY() const
 {
     return y_;
 }
+
+void Block::setXY(int x, int y)
+{
+    x_ = x;
+    y_ = y;
+}
+
 double Block::distance(Block* target) const
 {
     double deltaX = getX() - target->getX();
     double deltaY = getY() - target->getY();
     double delta = ((deltaX*deltaX)+(deltaY*deltaY));
-
+    SDL_assert_release( delta>= 0);
     return sqrt(delta);
 }
 void Block::step(Direction where)
 {
+    SDL_assert_release( ( first <= where ) && ( where <= last ) );
     switch (where){
     case up :
         y_++;
-        if(y_ >= FIELD_HEIGHT)
-            y_ -= FIELD_HEIGHT;
+        if(y_ >= mainScene->fieldHeight)
+            y_ -= mainScene->fieldHeight;
         break;
     case down :
         y_--;
         if(y_ < 0)
-            y_ += FIELD_HEIGHT;
+            y_ += mainScene->fieldHeight;
         break;
     case left :
         x_--;
         if(x_ < 0)
-            x_ += FIELD_WIDTH;
+            x_ += mainScene->fieldWidth;
         break;
     case right :
         x_++;
-        if(x_ >= FIELD_WIDTH)
-            x_ -= FIELD_WIDTH;
+        if(x_ >= mainScene->fieldWidth)
+            x_ -= mainScene->fieldWidth;
         break;
     case end :
+        break;
+    default:
+        SDL_assert_release( false );
         break;
     }
 }
 
+bool Block::isOn( Block** target,
+                  const std::vector<Block*> *reserve )
+{
+    SDL_assert_release( target != NULL );
+    if( *target == NULL )
+        return false;
+    if( reserve == NULL )
+        return ( x_ == (*target)->x_ ) && ( y_ == (*target)->y_ );
+    if( std::find( reserve->begin(),
+                   reserve->end(),
+                   *target
+                   ) == reserve->end() )
+        return false;
+    for( unsigned int i = 0; i < reserve->size(); ++i)
+    {
+        if( isOn( reserve->at( i ) ) )
+        {
+            *target = reserve->at( i );
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Block::isOn( Block* target ) const
 {
+    if( target == NULL )
+        return false;
     return ( x_ == target->x_ ) && ( y_ == target->y_ );
 }
+
+
 
 Block* Block::nearest( const std::vector<Block*>& vect )
 {

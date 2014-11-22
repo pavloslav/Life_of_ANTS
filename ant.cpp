@@ -2,54 +2,26 @@
 #include "scene.h"
 
 #include <cstdlib>
+#include <algorithm>
 
-Ant::Ant( int x, int y, Colony *col ) : ColonyBlock( x, y, col ),
-    speed( 1 ),
-    live( 100 ),
-    speedAtack( 1 ),
-    size( 1 ),
-    startPosX ( WIDTH / 6 ),
-    startPosY ( HEIGHT / 6 ),
-    startSize( 1 ),
+Ant::Ant( int x, int y, Colony *col ) :
+    ColonyBlock( x, y, col ),
     direction( right ),
     state( idle ),
     target( NULL )
 {
+    SDL_assert_release( col != NULL );
     getColony()->ants.push_back( this );
 }
 
-void Ant::setSpeed(double sp)
+Ant::~Ant()
 {
-    speed=sp;
+    getColony()->forgetAnt( this );
 }
-double Ant::getSpeed() const
-{
-    return speed;
-}
-
-void Ant::setLive(double lv)
-{
-    live = lv;
-}
-
-double Ant::getLive() const
-{
-    return live;
-}
-
-void Ant::setSpeedatack(double spa)
-{
-    speedAtack = spa;
-}
-
-double Ant::getSpeedatack() const
-{
-    return speedAtack;
-}
-
 
 void Ant::turnTo(Block *target)
 {
+    SDL_assert_release( target != NULL );
     if ( (getY()<target->getY() ) && ( direction != Block::down ) )
     {
         direction = Block::up;
@@ -66,7 +38,6 @@ void Ant::turnTo(Block *target)
     {
         direction = Block::left;
     }
-
 }
 
 void Ant::action()
@@ -82,15 +53,16 @@ void Ant::action()
         break;
 
     case goingToFood :
-        if( (rand()% 10)==0 )//раз на 10 кроків "забуваємо", що робили, щоб перевірити, де їжа
+        if( (rand()% 10) == 0 )//раз на 10 кроків "забуваємо", що робили, щоб перевірити, де їжа
         {
             state = idle;
+            target = NULL;
         }
         else
         {
-            if( isOn(target) )
+            if( isOn( &target, &mainScene->food ) )
             {
-                dynamic_cast<Food*>(target)->spawn();
+                delete target;
                 target = nearest( getColony()->bases );
                 state = carringFoodHome;
             }
@@ -98,14 +70,16 @@ void Ant::action()
         break;
 
     case carringFoodHome :
-        if( isOn(target) )
+        if( isOn( &target, &getColony()->bases ) )
         {
             getColony()->score++;
             state = idle;
             target = NULL;
         }
         break;
-
+    default:
+        SDL_assert_release( false );
+        break;
     }
     if(target)
         turnTo( target );
@@ -114,7 +88,7 @@ void Ant::action()
 
 void Ant::draw()
 {
-    getColony()->SetSDLColor( mainScene->graphics->canvas );
+    mainScene->graphics->setColor( getColony()->color );
     SDL_Rect rect = Graphics::rect( getX(), getY(), 0.9, 0.9 );
-    SDL_RenderDrawRect( mainScene->graphics->canvas, &rect );
+    SDL_RenderDrawRect( mainScene->graphics->renderer, &rect );
 }
