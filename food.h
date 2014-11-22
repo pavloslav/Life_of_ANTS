@@ -7,7 +7,7 @@ class Food : public Block
 {
 public:
         Food();
-        virtual void draw() const;
+        virtual void draw();
         void spawn();
 };
 

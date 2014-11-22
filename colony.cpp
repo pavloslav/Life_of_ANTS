@@ -1,9 +1,15 @@
 #include "colony.h"
-#include "base.h"
-#include "ant.h"
 
-Colony::Colony(float r, float g, float b, int scoreX, int scoreY) :
-    score(0.0),
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <sstream>
+
+#include "ant.h"
+#include "scene.h"
+
+Colony::Colony( Scene * scene, int r, int g, int b, int scoreX, int scoreY ) :
+    mainScene( scene ),
+    score( 0.0 ),
     red( r ),
     green( g ),
     blue( b ),
@@ -12,23 +18,7 @@ Colony::Colony(float r, float g, float b, int scoreX, int scoreY) :
 {
 }
 
-/*Base* Colony::nearestBase( Ant *who )
-{
-    Base* nearest = bases[0];
-    double minDistance = who->distance( nearest );
-    for(unsigned int i = 1; i < bases.size(); ++i )
-    {
-        double current = who->distance( bases[i] );
-        if( current < minDistance)
-        {
-            minDistance = current;
-            nearest = bases[ i ];
-        }
-    }
-    return nearest;
-}*/
-
-void Colony::draw() const
+void Colony::draw()
 {
     for(unsigned int i=0;i<bases.size();++i)
     {
@@ -38,4 +28,32 @@ void Colony::draw() const
     {
         ants[i]->draw();
     }
+    print();
+}
+
+void Colony::print()
+{
+    SetSDLColor( mainScene->graphics->canvas );
+    SDL_Color col;
+    col.b = blue;
+    col.r = red;
+    col.g = green;
+    std::string sc;
+    std::stringstream ss;
+    ss << score;
+    ss >> sc;
+    SDL_Surface* text=TTF_RenderText_Blended(mainScene->graphics->font,sc.c_str(),col);
+    SDL_Rect src = text->clip_rect, tgt;
+    tgt.x = scorePosX;
+    tgt.y = scorePosY;
+    tgt.h = src.h;
+    tgt.w = src.w;
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(mainScene->graphics->canvas, text);
+    SDL_assert_release( texture!= NULL );
+    SDL_RenderCopy(mainScene->graphics->canvas, texture, &src, &tgt);
+}
+
+void Colony::SetSDLColor( SDL_Renderer* canvas )
+{
+    SDL_SetRenderDrawColor( canvas, red, green, blue, 255 );
 }

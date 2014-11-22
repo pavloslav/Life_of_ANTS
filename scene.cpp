@@ -1,27 +1,30 @@
 #include "scene.h"
-#include <GL/glut.h>
 #include "colony.h"
 #include "food.h"
+#include "ant.h"
+#include <SDL2/SDL.h>
 
 Scene *Block::mainScene;
 
-Scene::Scene() :
-    black( 0.0, 0.0, 0.0,  15, 180 ),
-    red  ( 1.0, 0.0, 0.0, 280, 180 ),
+Scene::Scene(Graphics *gr) :
+    black( this,   0, 0, 0,  15, 10 ),
+    red  ( this, 255, 0, 0, 300, 10 ),
     delay ( 100 ),
     scale ( 1.0 ),
     winScale ( 5 ),
     winPosX ( 200 ),
-    winPosY ( 100 )
+    winPosY ( 100 ),
+    quit(false),
+    graphics( gr )
 {
     colonies.push_back( &black );
     colonies.push_back( &red );
     new Base( 15,  15, &red);
-    new Base(270, 120, &black);
+    new Base( FIELD_WIDTH - 15, FIELD_HEIGHT-15, &black);
     for(int i=0;i<20;++i)
     {
-        new Ant( rand()%30 + 250,
-                 rand()%30 + 100,
+        new Ant( rand()%30 + 150,
+                 rand()%30 + 150,
                  &black );
         new Ant( rand()% 30,
                  rand()% 30,
@@ -31,7 +34,11 @@ Scene::Scene() :
     allFoods();
 }
 
-void Scene::drawField() const
+Scene::~Scene()
+{
+}
+
+void Scene::drawField()
 {
    // glColor3f(0.0,1.0,0.0);
    // glBegin(GL_LINES);
@@ -42,25 +49,36 @@ void Scene::drawField() const
    //  glEnd();
 }
 
-void Scene::drawBar() const
+void Scene::processEvents()
 {
-    glColor3f(1.0,1.0,0.0);
-    glBegin(GL_LINES);
-     for (int i=0; i<WIDTH; i+=scale)
-       {glVertex2f(i,0); glVertex2f(i,HEIGHT);}
-     for (int j=0; j<HEIGHT; j+=scale)
-       {glVertex2f(0,j); glVertex2f(WIDTH,j);}
-     glEnd();
+    SDL_Event Event;
+    while(SDL_PollEvent(&Event))
+    {
+        switch( Event.type )
+        {
+        case SDL_QUIT:
+            quit = true;
+            break;
+        case SDL_KEYDOWN:
+            if( Event.key.keysym.sym == SDLK_z )
+                allFoods();
+            break;
+        }
+    }
 }
 
-void keyboard(unsigned char key, int , int );
-void timer(int = 0);
-void display();
-
-void Scene::display() const
+void Scene::action()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    for(int i=0;i<20;++i){
+      red.ants[i]->action();
+      black.ants[i]->action();
+    }
+}
 
+void Scene::draw()
+{
+    SDL_SetRenderDrawColor( graphics->canvas, 255, 255, 128, 255 );
+    SDL_RenderClear( graphics->canvas );
     drawField();
     for(unsigned int i=0;i<colonies.size();++i)
     {
@@ -70,9 +88,7 @@ void Scene::display() const
     {
         food[i]->draw();
     }
-    glFlush();
-    glutSwapBuffers();
-    glutPostOverlayRedisplay();
+    SDL_RenderPresent( graphics->canvas );
 }
 
 void Scene::allFoods()
@@ -83,42 +99,3 @@ void Scene::allFoods()
     }
 
 }
-
-void Scene::timer(int)
-{
-  display();
-  for(int i=0;i<20;++i){
-    red.ants[i]->action();
-    black.ants[i]->action();
-  }
-  glutTimerFunc(50,::timer,0);
-}
-
-void Scene::keyboard(unsigned char key )
-{
-    switch (key) {
-
-    case 'z':
-        allFoods();
-
-        break;
-    default:
-        break;
-    }
-}
-
-/*Food* Scene::nearestFood( Block *who )
-{
-    Food* nearest = food[0];
-    double minDistance = who->distance( nearest );
-    for(unsigned int i = 1; i < food.size(); ++i )
-    {
-        double current = who->distance( food[i] );
-        if( current < minDistance)
-        {
-            minDistance = current;
-            nearest = food[ i ];
-        }
-    }
-    return nearest;
-}*/

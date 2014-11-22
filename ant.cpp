@@ -1,19 +1,13 @@
 ﻿#include "ant.h"
 #include "scene.h"
-#include "food.h"
-#include "base.h"
-#include "colony.h"
-#include "colonyblock.h"
 
 #include <cstdlib>
-#include <GL/glut.h>
 
 Ant::Ant( int x, int y, Colony *col ) : ColonyBlock( x, y, col ),
     speed( 1 ),
     live( 100 ),
     speedAtack( 1 ),
     size( 1 ),
-    isCarringFood( false ),
     startPosX ( WIDTH / 6 ),
     startPosY ( HEIGHT / 6 ),
     startSize( 1 ),
@@ -120,6 +114,7 @@ void Ant::action()
 
 void Ant::draw()
 {
-    glColor3f( getColony()->red, getColony()->green, getColony()->blue );
-    glRectf(getX() * 1, getY() * 1, (getX() + 0.9) * 1, (getY() + 0.9) * 1);
+    getColony()->SetSDLColor( mainScene->graphics->canvas );
+    SDL_Rect rect = Graphics::rect( getX(), getY(), 0.9, 0.9 );
+    SDL_RenderDrawRect( mainScene->graphics->canvas, &rect );
 }

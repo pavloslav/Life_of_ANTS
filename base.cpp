@@ -1,7 +1,6 @@
 #include "base.h"
 #include "colony.h"
 #include "scene.h"
-#include <GL/glut.h>
 
 Base::Base( int x, int y, Colony *col ) :
     ColonyBlock( x, y, col ),
@@ -12,21 +11,15 @@ Base::Base( int x, int y, Colony *col ) :
     getColony()->bases.push_back( this );
 }
 
-void Base::draw() const
+void Base::draw()
 {
-    glColor3f( getColony()->red, getColony()->green, getColony()->blue );
-    glBegin(GL_POLYGON);
-    glVertex2f( getX() + mainScene->scale, getY());
-    glVertex2f( getX(), getY() + mainScene->scale);
-    glVertex2f( getX() - mainScene->scale, getY());
-    glVertex2f( getX(), getY() - mainScene->scale);
-    glEnd();
-    print();
+    getColony()->SetSDLColor( mainScene->graphics->canvas );
+    SDL_Point points[5];
+    points[0] = Graphics::point( getX() + 1, getY()     );
+    points[1] = Graphics::point( getX(),     getY() + 1 );
+    points[2] = Graphics::point( getX() - 1, getY()     );
+    points[3] = Graphics::point( getX(),     getY() - 1 );
+    points[4] = points[0];
+    SDL_RenderDrawLines( mainScene->graphics->canvas, points, 5 );
 }
 
-void Base::print() const
-{
-    glColor3f( getColony()->red, getColony()->green, getColony()->blue );
-    glRasterPos2f( getColony()->scorePosX, getColony()->scorePosY );
-    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,'0' + getColony()->score);
-}

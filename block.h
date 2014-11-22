@@ -3,10 +3,6 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#define WIDTH 300
-#define HEIGHT 150
-#define BARR 50
-
 class Scene;
 
 class Block {
@@ -18,7 +14,7 @@ public:
     void setY( int y );
     int getY() const;
     Block( int x, int y );
-    virtual void draw() const;
+    virtual void draw() = 0;
     double distance(Block* target) const;
 
     enum Direction{ up, down, left, right, end } ;

@@ -9,8 +9,7 @@ class Base : public ColonyBlock
 {
 public:
     Base( int x, int y, Colony *col );
-    virtual void print() const;
-    virtual void draw() const;
+    virtual void draw();
 private:
     int size;
     int startPosX;

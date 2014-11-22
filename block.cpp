@@ -1,6 +1,6 @@
 #include "block.h"
-#include <GL/glut.h>
 #include "scene.h"
+#include "graphics.h"
 #include <cmath>
 
 Block::Block( int x, int y ) :
@@ -8,14 +8,6 @@ Block::Block( int x, int y ) :
 {
 }
 
-void Block::draw() const
-{
-    glColor3f(0.0,1.0,0.0);
-    glVertex2f(x_*mainScene->scale,y_*mainScene->scale);
-    glVertex2f(x_*mainScene->scale+mainScene->scale,y_*mainScene->scale);
-    glVertex2f(x_*mainScene->scale+mainScene->scale,y_*mainScene->scale+mainScene->scale);
-    glVertex2f(x_*mainScene->scale,y_*mainScene->scale+mainScene->scale);
-}
 void Block::setX( int x )
 {
     x_ = x;
@@ -47,23 +39,23 @@ void Block::step(Direction where)
     switch (where){
     case up :
         y_++;
-        if(y_ >= HEIGHT)
-            y_ -= HEIGHT;
+        if(y_ >= FIELD_HEIGHT)
+            y_ -= FIELD_HEIGHT;
         break;
     case down :
         y_--;
         if(y_ < 0)
-            y_ += HEIGHT;
+            y_ += FIELD_HEIGHT;
         break;
     case left :
         x_--;
         if(x_ < 0)
-            x_ += WIDTH;
+            x_ += FIELD_WIDTH;
         break;
     case right :
         x_++;
-        if(x_ >= WIDTH)
-            x_ -= WIDTH;
+        if(x_ >= FIELD_WIDTH)
+            x_ -= FIELD_WIDTH;
         break;
     case end :
         break;

@@ -1,47 +1,34 @@
 #include <ctime>
 #include <cstdlib>
-#include <GL/glut.h>
+
+#define SDL_MAIN_HANDLED
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_timer.h>
 
 #include "scene.h"
 #include "block.h"
+#include "graphics.h"
 
-#define VERSION "0.09"
+#define VERSION "0.010"
 
 using namespace std;
 
-void keyboard(unsigned char key, int , int )
+int main(void)
 {
-    Block::mainScene->keyboard(key);
-}
-
-void timer(int = 0)
-{
-    Block::mainScene->timer();
-}
-
-void display()
-{
-    Block::mainScene->display();
-}
-
-int main(int argc, char **argv)
-{
+    //треба буде створити окремий клас гри, який створюється з меню, але поки меню нема, буде тут
     srand(time(NULL));
-    Block::mainScene = new Scene();
+    SDL_SetMainReady();
 
-    glutInit(&argc, argv);
-    glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB );
-    glutInitWindowSize(WIDTH*Block::mainScene->winScale, BARR+HEIGHT*Block::mainScene->winScale);
-    glutInitWindowPosition(Block::mainScene->winPosX, Block::mainScene->winPosY);
-    glutCreateWindow ("Ant " VERSION);
-    glClearColor(1.0,1.0,0.6,1.0);  //цвет фона
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0, WIDTH, 0, BARR+HEIGHT);
-    glutKeyboardFunc(keyboard);
-    glutDisplayFunc (display);
+    Graphics gr( "Ants " VERSION, WINDOW_WIDTH, WINDOW_HEIGHT );
 
-    glutTimerFunc(50,timer,0);
-
-    glutMainLoop();
+    Block::mainScene = new Scene( &gr );
+    while( !Block::mainScene->quit )
+    {
+        Block::mainScene->processEvents();
+        Block::mainScene->action();
+        Block::mainScene->draw();
+        SDL_Delay(50);
+    }
+    delete Block::mainScene;
+    return 0;
 }

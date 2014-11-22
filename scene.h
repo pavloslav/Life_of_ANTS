@@ -1,20 +1,17 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "ant.h"
-#include "base.h"
+#include <vector>
+
 #include "food.h"
 #include "block.h"
 #include "colony.h"
-#include <vector>
-
-class Food;
-class Block;
+#include "graphics.h"
 
 class Scene
 {
 public:
-    Scene();
+    Scene( Graphics *gr );
     std::vector< Block * > food;
     std::vector< Colony * > colonies;
     Colony black, red;
@@ -23,16 +20,17 @@ public:
     int winScale;
     int winPosX;
     int winPosY;
+    bool quit;
+    Graphics *graphics;
 
     void init();
 
-    void drawField() const;
-    void drawBar() const;
-    void display() const;
+    void drawField();
+    virtual void draw();
     void allFoods();
-    void keyboard(unsigned char key);
-    void timer(int = 0);
-    //Food* nearestFood( Block *who );
+    virtual void processEvents();
+    virtual void action();
+    virtual ~Scene();
 };
 
 #endif // SCENE_H

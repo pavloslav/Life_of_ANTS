@@ -1,22 +1,22 @@
 #include "food.h"
-#include <GL/glut.h>
 #include "block.h"
 #include "scene.h"
+#include "graphics.h"
 
-Food::Food() : Block( (rand()%WIDTH), (rand()%HEIGHT))
+Food::Food() : Block( (rand()%FIELD_WIDTH), (rand()%FIELD_HEIGHT))
 {
 }
 
-
-void Food::draw() const
+void Food::draw()
 {
-    glColor3f(0.0,0.0,1.0);
-    glRectf(getX()*mainScene->scale,getY()*mainScene->scale,(getX()+1)*mainScene->scale,(getY()+1)*mainScene->scale);
+    SDL_SetRenderDrawColor( mainScene->graphics->canvas, 0, 0, 255, 255 );
+    SDL_Rect rect = Graphics::rect( getX(), getY(), 0.9, 0.9 );
+    SDL_RenderDrawRect( mainScene->graphics->canvas, &rect );
 }
 
 void Food::spawn()
 {
-    setX((rand()%WIDTH));
-    setY((rand()%HEIGHT));
+    setX((rand()%FIELD_WIDTH));
+    setY((rand()%FIELD_HEIGHT));
 }
 

@@ -1,11 +1,11 @@
 #ifndef ANT_H
 #define ANT_H
 
+#include <SDL2/SDL.h>
 #include "colonyblock.h"
-
-class Colony;
-class Base;
-class Food;
+#include "colony.h"
+#include "base.h"
+#include "food.h"
 
 class Ant : public ColonyBlock
 {
@@ -17,7 +17,7 @@ public:
     double getLive() const;
     void setSpeedatack(double);
     double getSpeedatack() const;
-    virtual void draw() const;
+    virtual void draw();
     virtual void turnTo( Block *target );
     virtual void action();
     enum State {idle, goingToFood, carringFoodHome};
@@ -27,7 +27,6 @@ private:
     double live;
     double speedAtack;
     int size;
-    bool isCarringFood;
     int startPosX;
     int startPosY;
     int startSize;
