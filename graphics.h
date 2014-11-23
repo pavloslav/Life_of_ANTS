@@ -24,7 +24,7 @@ public:
     static SDL_Point point( float x, float y );
     static SDL_Rect rect( float x, float y, float w , float h );
     void setColor( const Color &color );
-    void outText(int x, int y, const char *text , Color col);
+    //void outText(int x, int y, const char *text , Color col);
 
     int error;
     SDL_Window* window;

@@ -5,6 +5,7 @@
 
 #include "block.h"
 #include "graphics.h"
+#include "label.h"
 
 class Base;
 class Scene;
@@ -22,8 +23,8 @@ public:
     int scorePosX, scorePosY;
     std::vector< Block * > bases;
     std::vector< Ant * > ants;
+    Label label;
     virtual void draw();
-    virtual void print();
     virtual void forgetBase( Block *what );
     virtual void forgetAnt( Block *what );
 };

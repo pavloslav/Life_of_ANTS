@@ -7,6 +7,7 @@
 #include "block.h"
 #include "colony.h"
 #include "graphics.h"
+#include "label.h"
 
 class Scene
 {
@@ -34,6 +35,7 @@ public:
     void forgetColony( Colony *what );
 private:
     bool dying;
+    Label labelFPS;
 };
 
 #endif // SCENE_H

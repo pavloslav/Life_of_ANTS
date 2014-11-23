@@ -17,7 +17,8 @@ Scene::Scene(Graphics *gr, int w, int h) :
     graphics( gr ),
     foodColor( ColorBlue ),
     FPS( 0.0 ),
-    dying( false )
+    dying( false ),
+    labelFPS( gr, 200, 10, ColorGreen )
 
 {
     Block::mainScene = this;
@@ -125,9 +126,7 @@ void Scene::draw()
     {
         food[i]->draw();
     }
-    std::stringstream ss;
-    ss << "FPS: " << FPS;
-    graphics->outText( 200, 10, ss.str().c_str(), ColorGreen );
+    ( labelFPS.setText("FPS: ") << FPS ).draw();
     SDL_RenderPresent( graphics->renderer );
 }
 

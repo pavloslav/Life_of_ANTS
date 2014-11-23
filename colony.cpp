@@ -12,7 +12,8 @@ Colony::Colony( Scene * scene, Color col, int scoreX, int scoreY ) :
     score( 0.0 ),
     color( col ),
     scorePosX( scoreX ),
-    scorePosY( scoreY )
+    scorePosY( scoreY ),
+    label( mainScene->graphics, scoreX, scoreY, col )
 {
     SDL_assert( mainScene != NULL );
     mainScene->colonies.push_back( this );
@@ -43,15 +44,8 @@ void Colony::draw()
     {
         ants[i]->draw();
     }
-    print();
-}
-
-void Colony::print()
-{
-    mainScene->graphics->setColor( color );
-    std::stringstream ss;
-    ss << score;
-    mainScene->graphics->outText( scorePosX, scorePosY, ss.str().c_str(), color );
+    ( label.setText("Lives: ") << score ).draw();
+    //label.draw();
 }
 
 void Colony::forgetBase(Block *what)

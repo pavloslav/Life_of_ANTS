@@ -53,24 +53,6 @@ void Graphics::setColor( const Color &color )
     SDL_SetRenderDrawColor( renderer, color.r, color.g, color.b, color.a );
 }
 
-void Graphics::outText( int x, int y, const char *text, Color col )
-{
-    SDL_Surface* textSurface =
-            TTF_RenderText_Blended( font, text, col );
-    SDL_Rect src = textSurface->clip_rect,
-             tgt;
-    tgt.x = x;
-    tgt.y = y;
-    tgt.h = src.h;
-    tgt.w = src.w;
-    SDL_Texture *texture =
-            SDL_CreateTextureFromSurface( renderer, textSurface );
-    SDL_FreeSurface( textSurface );
-    SDL_assert( texture!= NULL );
-    SDL_RenderCopy( renderer, texture, &src, &tgt);
-    SDL_DestroyTexture( texture );
-}
-
 Color::Color( Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha )
 {
     r = red;
