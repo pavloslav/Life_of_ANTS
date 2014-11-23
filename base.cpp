@@ -5,7 +5,7 @@
 Base::Base( int x, int y, Colony *col ) :
     ColonyBlock( x, y, col )
 {
-    SDL_assert_release( col != NULL );
+    SDL_assert( col != NULL );
     getColony()->bases.push_back( this );
 }
 

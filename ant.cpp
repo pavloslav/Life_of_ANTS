@@ -10,7 +10,7 @@ Ant::Ant( int x, int y, Colony *col ) :
     state( idle ),
     target( NULL )
 {
-    SDL_assert_release( col != NULL );
+    SDL_assert( col != NULL );
     getColony()->ants.push_back( this );
 }
 
@@ -21,7 +21,7 @@ Ant::~Ant()
 
 void Ant::turnTo(Block *target)
 {
-    SDL_assert_release( target != NULL );
+    SDL_assert( target != NULL );
     if ( (getY()<target->getY() ) && ( direction != Block::down ) )
     {
         direction = Block::up;
@@ -78,7 +78,7 @@ void Ant::action()
         }
         break;
     default:
-        SDL_assert_release( false );
+        SDL_assert( false );
         break;
     }
     if(target)

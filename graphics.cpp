@@ -6,22 +6,22 @@ Graphics::Graphics( const char *title, int width, int height ) :
     renderer( NULL )
 {
     int initResult = SDL_Init( SDL_INIT_VIDEO );
-    SDL_assert_release( initResult >= 0 );
+    SDL_assert( initResult >= 0 );
 
     window = SDL_CreateWindow( title,
                                SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                width, height,
                                0 );
-    SDL_assert_release( window != NULL );
+    SDL_assert( window != NULL );
 
     renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
-    SDL_assert_release( renderer != NULL );
+    SDL_assert( renderer != NULL );
 
     int ttfInitResult = TTF_Init();
-    SDL_assert_release( ttfInitResult >= 0 );
+    SDL_assert( ttfInitResult >= 0 );
 
     font = TTF_OpenFont("times.ttf", 24);
-    SDL_assert_release( font != NULL );
+    SDL_assert( font != NULL );
 }
 
 Graphics::~Graphics()
@@ -66,7 +66,7 @@ void Graphics::outText( int x, int y, const char *text, Color col )
     SDL_Texture *texture =
             SDL_CreateTextureFromSurface( renderer, textSurface );
     SDL_FreeSurface( textSurface );
-    SDL_assert_release( texture!= NULL );
+    SDL_assert( texture!= NULL );
     SDL_RenderCopy( renderer, texture, &src, &tgt);
     SDL_DestroyTexture( texture );
 }

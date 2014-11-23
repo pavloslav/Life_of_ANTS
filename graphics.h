@@ -9,6 +9,7 @@
 #define HEADER_SIZE   50
 #define WINDOW_WIDTH  ( BLOCK_SIZE * FIELD_WIDTH )
 #define WINDOW_HEIGHT ( HEADER_SIZE + ( BLOCK_SIZE * FIELD_HEIGHT ) )
+#define OBJECTS       500
 
 struct Color : public SDL_Color
 {
@@ -36,7 +37,8 @@ public:
 const Color ColorBlack      ( 0, 0, 0 ),
             ColorRed        ( 255, 0, 0),
             ColorBlue       ( 0, 0, 255 ),
-            ColorLightYellow( 255, 255, 128 );
+            ColorYellow     ( 255, 255, 128 ),
+            ColorGreen      ( 0, 255, 0 );
 
 
 #endif // GRAPHICS_H

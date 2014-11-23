@@ -10,6 +10,8 @@
 #include "graphics.h"
 
 #define VERSION "0.012"
+#define DELAY   20
+
 
 using namespace std;
 
@@ -21,18 +23,21 @@ int main(void)
 
     Graphics gr( "Ants " VERSION, WINDOW_WIDTH, WINDOW_HEIGHT );
 
-    new Scene( &gr, FIELD_WIDTH, FIELD_HEIGHT );
-    SDL_assert_release( Block::mainScene != NULL );
-    while( !Block::mainScene->quit )
+    Scene sc( &gr, FIELD_WIDTH, FIELD_HEIGHT );
+    SDL_assert( Block::mainScene != NULL );
+    while( !sc.quit )
     {
         Uint32 startProcessing = SDL_GetTicks();
-        Block::mainScene->processEvents();
-        Block::mainScene->action();
-        Block::mainScene->draw();
+        sc.processEvents();
+        sc.action();
+        sc.draw();
         Uint32 timeProcessing = SDL_GetTicks() - startProcessing;
-        if( timeProcessing < 50 )
-            SDL_Delay(50 - timeProcessing);
+        Uint32 timeForFrame = (timeProcessing < DELAY)?DELAY:timeProcessing;
+        sc.FPS = timeForFrame > 0 ? 1000.0 / timeForFrame
+                                  : 1001.0;
+        if( timeProcessing < DELAY )
+            SDL_Delay( DELAY - timeProcessing );
     }
-    delete Block::mainScene;
+    //delete Block::mainScene;
     return 0;
 }

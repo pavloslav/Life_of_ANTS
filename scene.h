@@ -20,6 +20,7 @@ public:
     bool quit;
     Graphics *graphics;
     Color foodColor;
+    double FPS;
 
     void init();
 

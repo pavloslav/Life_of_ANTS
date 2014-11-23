@@ -43,12 +43,12 @@ double Block::distance(Block* target) const
     double deltaX = getX() - target->getX();
     double deltaY = getY() - target->getY();
     double delta = ((deltaX*deltaX)+(deltaY*deltaY));
-    SDL_assert_release( delta>= 0);
+    SDL_assert( delta>= 0);
     return sqrt(delta);
 }
 void Block::step(Direction where)
 {
-    SDL_assert_release( ( first <= where ) && ( where <= last ) );
+    SDL_assert( ( first <= where ) && ( where <= last ) );
     switch (where){
     case up :
         y_++;
@@ -73,7 +73,7 @@ void Block::step(Direction where)
     case end :
         break;
     default:
-        SDL_assert_release( false );
+        SDL_assert( false );
         break;
     }
 }
@@ -81,24 +81,18 @@ void Block::step(Direction where)
 bool Block::isOn( Block** target,
                   const std::vector<Block*> *reserve )
 {
-    SDL_assert_release( target != NULL );
+    SDL_assert( target != NULL );
+    SDL_assert( reserve != NULL );
     if( *target == NULL )
         return false;
-    if( reserve == NULL )
-        return ( x_ == (*target)->x_ ) && ( y_ == (*target)->y_ );
-    if( std::find( reserve->begin(),
-                   reserve->end(),
-                   *target
-                   ) == reserve->end() )
+    std::vector<Block*>::const_iterator existingTarget
+                                    = std::find( reserve->begin(),
+                                                 reserve->end(),
+                                                 *target );
+    if( existingTarget == reserve->end() )
         return false;
-    for( unsigned int i = 0; i < reserve->size(); ++i)
-    {
-        if( isOn( reserve->at( i ) ) )
-        {
-            *target = reserve->at( i );
-            return true;
-        }
-    }
+    if( isOn( *existingTarget ) )
+        return true;
     return false;
 }
 

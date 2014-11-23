@@ -14,7 +14,7 @@ Colony::Colony( Scene * scene, Color col, int scoreX, int scoreY ) :
     scorePosX( scoreX ),
     scorePosY( scoreY )
 {
-    SDL_assert_release( mainScene != NULL );
+    SDL_assert( mainScene != NULL );
     mainScene->colonies.push_back( this );
 }
 
@@ -24,12 +24,12 @@ Colony::~Colony()
     {
         delete ants[i];
     }
-    SDL_assert_release( ants.size() == 0 );
+    SDL_assert( ants.size() == 0 );
     for(int i = bases.size() - 1; i >= 0; --i)
     {
         delete bases[i];
     }
-    SDL_assert_release( bases.size() == 0 );
+    SDL_assert( bases.size() == 0 );
     mainScene->forgetColony( this );
 }
 
@@ -56,12 +56,12 @@ void Colony::print()
 
 void Colony::forgetBase(Block *what)
 {
-    SDL_assert_release( what != NULL );
+    SDL_assert( what != NULL );
     bases.erase( std::remove( bases.begin(), bases.end(), what ), bases.end() );
 }
 
 void Colony::forgetAnt(Block *what)
 {
-    SDL_assert_release( what != NULL );
+    SDL_assert( what != NULL );
     ants.erase( std::remove( ants.begin(), ants.end(), what ), ants.end() );
 }
