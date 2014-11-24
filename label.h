@@ -8,7 +8,7 @@
 class Label
 {
 public:
-    Label( Graphics *graph, int x, int y, Color col, const char *string = NULL );
+    Label( Graphics *graph, TTF_Font *font, int x, int y, Color col, const std::string &string = "" );
     ~Label();
 
     void draw();
@@ -22,7 +22,7 @@ public:
     const SDL_Rect& getRect();
     std::string getText();
 
-    Label &setText( const char *string );
+    Label &setText(const std::string& string );
 
     template<typename T>
     Label& operator <<( const T& t );
@@ -32,6 +32,7 @@ private:
     void calculateRects();
 
     Graphics *graphics;
+    TTF_Font *font_;
     Color color;
     std::stringstream content;
     SDL_Surface *surface;

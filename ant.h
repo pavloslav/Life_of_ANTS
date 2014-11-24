@@ -9,7 +9,7 @@
 class Ant : public ColonyBlock
 {
 public:
-    Ant( int x, int y, Colony* col );
+    Ant(int x, int y, const std::string &name, Colony* col );
     virtual ~Ant();
     virtual void draw();
     virtual void turnTo( Block *target );
@@ -20,5 +20,6 @@ private:
     Block::Direction direction;
     State state;
     Block *target;
+    Label label;
 };
 #endif // ANT_H

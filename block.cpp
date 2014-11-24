@@ -4,9 +4,10 @@
 #include <cmath>
 #include <algorithm>
 
-Block::Block( int x, int y ) :
-    x_(x), y_(y)
+Block::Block(int x, int y, const std::string &name) :
+    x_(x), y_(y), name_( name )
 {
+
 }
 
 Block::~Block()
@@ -36,6 +37,16 @@ void Block::setXY(int x, int y)
 {
     x_ = x;
     y_ = y;
+}
+
+const std::string &Block::getName() const
+{
+    return name_;
+}
+
+void Block::setName(const std::string &newName)
+{
+    name_ = newName;
 }
 
 double Block::distance(Block* target) const

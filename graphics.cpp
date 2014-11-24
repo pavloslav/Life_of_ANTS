@@ -22,6 +22,10 @@ Graphics::Graphics( const char *title, int width, int height ) :
 
     font = TTF_OpenFont("times.ttf", 24);
     SDL_assert( font != NULL );
+
+    smallFont = TTF_OpenFont("times.ttf", 8);
+    SDL_assert( font != NULL );
+
 }
 
 Graphics::~Graphics()

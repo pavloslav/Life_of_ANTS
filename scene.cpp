@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include <algorithm>
 #include <sstream>
+#include <cstring>
 
 Scene *Block::mainScene;
 
@@ -18,23 +19,30 @@ Scene::Scene(Graphics *gr, int w, int h) :
     foodColor( ColorBlue ),
     FPS( 0.0 ),
     dying( false ),
-    labelFPS( gr, 200, 10, ColorGreen )
+    labelFPS( gr, gr->font, 200, 10, ColorGreen )
 
 {
     Block::mainScene = this;
     Colony *red   = new Colony( this, ColorRed  , 440, 10 ),
            *black = new Colony( this, ColorBlack,  15, 10 );
-    new Base( 15,  15, red);
-    new Base( FIELD_WIDTH - 15, FIELD_HEIGHT - 15, black);
+    new Base( 15,  15, "Red", red );
+    new Base( FIELD_WIDTH - 15, FIELD_HEIGHT - 15, "Black", black);
+    std::stringstream name;
     for(int i=0;i<OBJECTS;++i)
     {
+        name.str( "" );
+        name << "Ant_" << i;
         new Ant( rand() % 31 - 15 + black->bases[0]->getX(),
                  rand() % 31 - 15 + black->bases[0]->getY(),
+                 name.str(),
                  black );
         new Ant( rand() % 31 - 15 + red->bases[0]->getX(),
                  rand() % 31 - 15 + red->bases[0]->getY(),
+                 name.str(),
                  red );
-        new Food();
+        name.str( "" );
+        name << "Food_" << i;
+        new Food( name.str() );
     }
 }
 
@@ -50,26 +58,16 @@ Scene::~Scene()
 void Scene::forgetFood( Food *what )
 {
     SDL_assert( what != NULL );
+    std::string name = what->getName();
     food.erase( std::remove( food.begin(), food.end(), what ), food.end() );
     if( !dying )
-        new Food();
+        new Food( name );
 }
 
 void Scene::forgetColony(Colony *what)
 {
     SDL_assert( what != NULL );
     colonies.erase( std::remove( colonies.begin(), colonies.end(), what ), colonies.end() );
-}
-
-void Scene::drawField()
-{
-   // glColor3f(0.0,1.0,0.0);
-   // glBegin(GL_LINES);
-   //  for (int i=0; i<WIDTH; i+=scale)
-   //    {glVertex2f(i,0); glVertex2f(i,HEIGHT);}
-   //  for (int j=0; j<=HEIGHT; j+=scale)
-   //    {glVertex2f(0,j); glVertex2f(WIDTH,j);}
-   //  glEnd();
 }
 
 void Scene::processEvents()
@@ -110,6 +108,7 @@ void Scene::action()
             colonies[colonyNum]->ants[antNum]->action();
         }
     }
+    labelFPS.setText("FPS: ") << FPS;
 }
 
 void Scene::draw()
@@ -117,7 +116,6 @@ void Scene::draw()
     graphics->setColor( ColorYellow );
     int result = SDL_RenderClear( graphics->renderer );
     SDL_assert( result >= 0 );
-    drawField();
     for(unsigned int i=0;i<colonies.size();++i)
     {
         colonies[i]->draw();
@@ -126,7 +124,7 @@ void Scene::draw()
     {
         food[i]->draw();
     }
-    ( labelFPS.setText("FPS: ") << FPS ).draw();
+    labelFPS.draw();
     SDL_RenderPresent( graphics->renderer );
 }
 

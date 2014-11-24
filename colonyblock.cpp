@@ -1,8 +1,8 @@
 #include "colonyblock.h"
 #include "colony.h"
 
-ColonyBlock::ColonyBlock( int x, int y, Colony *col ) :
-    Block( x, y ), colony( col )
+ColonyBlock::ColonyBlock( int x, int y, const std::string& name, Colony *col ) :
+    Block( x, y, name ), colony( col )
 {
 }
 

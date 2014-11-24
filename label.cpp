@@ -2,15 +2,15 @@
 
 #include <cstring>
 
-Label::Label( Graphics *graph, int x, int y, Color col, const char *string ) :
+Label::Label( Graphics *graph, TTF_Font *font, int x, int y, Color col, const std::string& string ) :
     graphics ( graph ),
+    font_ ( font ),
     color( col ),
-    content( /*std::stringstream::ate*/ ),
     surface( NULL ),
     texture( NULL )
 {
     SDL_assert( graph != NULL );
-    if( string != NULL )
+    if( string != "" )
     {
         content << string;
         createTexture();
@@ -50,7 +50,7 @@ void Label::createTexture()
     }
     char buffer[256];
     strncpy( buffer, getText().c_str(), 256 );
-    surface = TTF_RenderText_Blended( graphics->font, buffer, color );
+    surface = TTF_RenderText_Blended( font_, buffer, color );
     SDL_assert( surface != NULL );
 
     if( texture != NULL)
@@ -117,7 +117,7 @@ std::string Label::getText()
     return content.str();
 }
 
-Label& Label::setText(const char *string)
+Label& Label::setText(const std::string &string)
 {
     content.str( std::string() );
     content << string;

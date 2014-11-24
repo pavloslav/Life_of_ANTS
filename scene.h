@@ -25,7 +25,6 @@ public:
 
     void init();
 
-    void drawField();
     virtual void draw();
     void allFoods();
     virtual void processEvents();

@@ -2,8 +2,8 @@
 #include "colony.h"
 #include "scene.h"
 
-Base::Base( int x, int y, Colony *col ) :
-    ColonyBlock( x, y, col )
+Base::Base(int x, int y, const std::string& name, Colony *col ) :
+    ColonyBlock( x, y, name, col )
 {
     SDL_assert( col != NULL );
     getColony()->bases.push_back( this );

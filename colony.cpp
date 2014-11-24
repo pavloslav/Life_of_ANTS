@@ -13,7 +13,7 @@ Colony::Colony( Scene * scene, Color col, int scoreX, int scoreY ) :
     color( col ),
     scorePosX( scoreX ),
     scorePosY( scoreY ),
-    label( mainScene->graphics, scoreX, scoreY, col )
+    label( mainScene->graphics, mainScene->graphics->font, scoreX, scoreY, col )
 {
     SDL_assert( mainScene != NULL );
     mainScene->colonies.push_back( this );

@@ -38,6 +38,5 @@ int main(void)
         if( timeProcessing < DELAY )
             SDL_Delay( DELAY - timeProcessing );
     }
-    //delete Block::mainScene;
     return 0;
 }

@@ -4,11 +4,12 @@
 #include <cstdlib>
 #include <algorithm>
 
-Ant::Ant( int x, int y, Colony *col ) :
-    ColonyBlock( x, y, col ),
+Ant::Ant( int x, int y, const std::string& name, Colony *col ) :
+    ColonyBlock( x, y, name, col ),
     direction( right ),
     state( idle ),
-    target( NULL )
+    target( NULL ),
+    label( mainScene->graphics, mainScene->graphics->smallFont, 0, 0, col->color, name )
 {
     SDL_assert( col != NULL );
     getColony()->ants.push_back( this );
@@ -91,4 +92,7 @@ void Ant::draw()
     mainScene->graphics->setColor( getColony()->color );
     SDL_Rect rect = Graphics::rect( getX(), getY(), 0.9, 0.9 );
     SDL_RenderDrawRect( mainScene->graphics->renderer, &rect );
+    SDL_Point realPoint = mainScene->graphics->point( getX(), getY() );
+    label.setXY( realPoint.x + 2, realPoint.y - 10 );
+    label.draw();
 }

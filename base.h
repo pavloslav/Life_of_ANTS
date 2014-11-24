@@ -8,10 +8,12 @@ class Colony;
 class Base : public ColonyBlock
 {
 public:
-    Base( int x, int y, Colony *col );
+    Base(int x, int y, const std::string &name,  Colony *col );
     virtual ~Base();
     virtual void draw();
+
 private:
+
 };
 
 #endif // BASE_H

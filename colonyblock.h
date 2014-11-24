@@ -7,7 +7,7 @@ class Colony;
 class ColonyBlock : public Block
 {
 public:
-    ColonyBlock( int x, int y, Colony *col);
+    ColonyBlock(int x, int y, const std::string &name, Colony *col);
     virtual ~ColonyBlock();
     Colony *getColony() const;
     virtual void draw() = 0;
