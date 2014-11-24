@@ -7,7 +7,7 @@
 class Food : public Block
 {
 public:
-    Food( const std::string& name );
+    Food( std::shared_ptr<Scene> scene, const std::string& name );
     virtual ~Food();
     virtual void draw();
 private:

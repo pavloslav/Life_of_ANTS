@@ -2,14 +2,20 @@
 
 #include <cstring>
 
-Label::Label( Graphics *graph, TTF_Font *font, int x, int y, Color col, const std::string& string ) :
+Label::Label( std::shared_ptr<Graphics> graph,
+              TTF_Font *font,
+              int x,
+              int y,
+              Color col,
+              const std::string &string)
+              :
     graphics ( graph ),
     font_ ( font ),
     color( col ),
     surface( NULL ),
     texture( NULL )
 {
-    SDL_assert( graph != NULL );
+    SDL_assert( graphics );
     if( string != "" )
     {
         content << string;

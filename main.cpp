@@ -9,7 +9,7 @@
 #include "block.h"
 #include "graphics.h"
 
-#define VERSION "0.012"
+#define VERSION "0.013"
 #define DELAY   20
 
 
@@ -21,19 +21,18 @@ int main(void)
     srand(time(NULL));
     SDL_SetMainReady();
 
-    Graphics gr( "Ants " VERSION, WINDOW_WIDTH, WINDOW_HEIGHT );
-
-    Scene sc( &gr, FIELD_WIDTH, FIELD_HEIGHT );
-    SDL_assert( Block::mainScene != NULL );
-    while( !sc.quit )
+    auto gr = std::make_shared<Graphics>( "Ants " VERSION, WINDOW_WIDTH, WINDOW_HEIGHT );
+    auto sc = std::make_shared<Scene> ( gr, FIELD_WIDTH, FIELD_HEIGHT );
+    sc->init();
+    while( !sc->quit )
     {
         Uint32 startProcessing = SDL_GetTicks();
-        sc.processEvents();
-        sc.action();
-        sc.draw();
+        sc->processEvents();
+        sc->action();
+        sc->draw();
         Uint32 timeProcessing = SDL_GetTicks() - startProcessing;
         Uint32 timeForFrame = (timeProcessing < DELAY)?DELAY:timeProcessing;
-        sc.FPS = timeForFrame > 0 ? 1000.0 / timeForFrame
+        sc->FPS = timeForFrame > 0 ? 1000.0 / timeForFrame
                                   : 1001.0;
         if( timeProcessing < DELAY )
             SDL_Delay( DELAY - timeProcessing );

@@ -4,10 +4,9 @@
 #include <cmath>
 #include <algorithm>
 
-Block::Block(int x, int y, const std::string &name) :
-    x_(x), y_(y), name_( name )
+Block::Block( std::shared_ptr<Scene> scene, int x, int y, const std::string &name) :
+    mainScene(scene), x_(x), y_(y), name_( name )
 {
-
 }
 
 Block::~Block()
@@ -49,37 +48,47 @@ void Block::setName(const std::string &newName)
     name_ = newName;
 }
 
-double Block::distance(Block* target) const
+double Block::distance2( std::weak_ptr<Block> who ) const
 {
-    double deltaX = getX() - target->getX();
-    double deltaY = getY() - target->getY();
-    double delta = ((deltaX*deltaX)+(deltaY*deltaY));
-    SDL_assert( delta>= 0);
-    return sqrt(delta);
+    std::shared_ptr<Block> existingWho( who );
+    SDL_assert( existingWho );
+    double deltaX = getX() - existingWho->getX();
+    double deltaY = getY() - existingWho->getY();
+    return ( ( deltaX * deltaX ) + ( deltaY * deltaY ) );
 }
+
+double Block::distance( std::weak_ptr<Block> who ) const
+{
+    double distanceSquared = distance2( who );
+    SDL_assert( distanceSquared >= 0 );
+    return sqrt( distanceSquared );
+}
+
 void Block::step(Direction where)
 {
     SDL_assert( ( first <= where ) && ( where <= last ) );
+    std::shared_ptr<Scene> scene( mainScene );
+    SDL_assert( scene );
     switch (where){
     case up :
         y_++;
-        if(y_ >= mainScene->fieldHeight)
-            y_ -= mainScene->fieldHeight;
+        if(y_ >= scene->fieldHeight)
+            y_ -= scene->fieldHeight;
         break;
     case down :
         y_--;
         if(y_ < 0)
-            y_ += mainScene->fieldHeight;
+            y_ += scene->fieldHeight;
         break;
     case left :
         x_--;
         if(x_ < 0)
-            x_ += mainScene->fieldWidth;
+            x_ += scene->fieldWidth;
         break;
     case right :
         x_++;
-        if(x_ >= mainScene->fieldWidth)
-            x_ -= mainScene->fieldWidth;
+        if(x_ >= scene->fieldWidth)
+            x_ -= scene->fieldWidth;
         break;
     case end :
         break;
@@ -89,52 +98,32 @@ void Block::step(Direction where)
     }
 }
 
-bool Block::isOn( Block** target,
-                  const std::vector<Block*> *reserve )
+bool Block::isOn( std::weak_ptr<Block> who ) const
 {
-    SDL_assert( target != NULL );
-    SDL_assert( reserve != NULL );
-    if( *target == NULL )
-        return false;
-    std::vector<Block*>::const_iterator existingTarget
-                                    = std::find( reserve->begin(),
-                                                 reserve->end(),
-                                                 *target );
-    if( existingTarget == reserve->end() )
-        return false;
-    if( isOn( *existingTarget ) )
-        return true;
+    std::shared_ptr<Block> existingWho( who );
+    if( existingWho )
+    {
+        return ( x_ == existingWho->x_ ) && ( y_ == existingWho->y_ );
+    }
     return false;
 }
 
-bool Block::isOn( Block* target ) const
-{
-    if( target == NULL )
-        return false;
-    return ( x_ == target->x_ ) && ( y_ == target->y_ );
-}
 
-
-
-Block* Block::nearest( const std::vector<Block*>& vect )
+std::weak_ptr<Block> Block::nearest( const std::vector<std::shared_ptr<Block>>& vect )
 {
     if( vect.size() == 0 )
     {
-        return NULL;
+        return std::weak_ptr<Block>();
     }
-    Block* nearest = vect[0];
-    if( vect.size() > 1 )
+    else
     {
-        double minDistance = distance( nearest );
-        for(unsigned int i = 1; i < vect.size(); ++i )
-        {
-            double current = distance( vect[i] );
-            if( current < minDistance)
-            {
-                minDistance = current;
-                nearest = vect[ i ];
-            }
-        }
+        return *std::min_element( vect.begin(),
+                                  vect.end(),
+                                  [this]( std::shared_ptr<Block> left,
+                                          std::shared_ptr<Block> right)
+                                  {
+                                      return distance2(left) < distance2(right);
+                                  }
+                        );
     }
-    return nearest;
 }

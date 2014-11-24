@@ -3,18 +3,16 @@
 #include "scene.h"
 #include "graphics.h"
 
-Food::Food(const std::string &name ) :
-    Block( rand() % mainScene->fieldWidth, rand() % mainScene->fieldHeight, name ),
-    label( mainScene->graphics, mainScene->graphics->smallFont, 0, 0, mainScene->foodColor, name )
+Food::Food( std::shared_ptr<Scene> scene, const std::string &name ) :
+    Block( scene, rand() % scene->fieldWidth, rand() % scene->fieldHeight, name ),
+    label( scene->graphics, scene->graphics->smallFont, 0, 0, scene->foodColor, name )
 {
     SDL_Point realPoint = mainScene->graphics->point( getX(), getY() );
     label.setXY( realPoint.x, realPoint.y - 10 );
-    mainScene->food.push_back( this );
 }
 
 Food::~Food()
 {
-    mainScene->forgetFood( this );
 }
 
 void Food::draw()

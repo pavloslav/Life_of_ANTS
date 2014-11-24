@@ -9,65 +9,78 @@
 #include <sstream>
 #include <cstring>
 
-Scene *Block::mainScene;
-
-Scene::Scene(Graphics *gr, int w, int h) :
+Scene::Scene( std::shared_ptr<Graphics> gr, int w, int h ) :
     fieldWidth( w ),
     fieldHeight( h ),
     quit(false),
     graphics( gr ),
     foodColor( ColorBlue ),
     FPS( 0.0 ),
-    dying( false ),
     labelFPS( gr, gr->font, 200, 10, ColorGreen )
-
 {
-    Block::mainScene = this;
-    Colony *red   = new Colony( this, ColorRed  , 440, 10 ),
-           *black = new Colony( this, ColorBlack,  15, 10 );
-    new Base( 15,  15, "Red", red );
-    new Base( FIELD_WIDTH - 15, FIELD_HEIGHT - 15, "Black", black);
+}
+
+Scene::~Scene()
+{
+    quit = true;
+}
+
+void Scene::init()
+{
+    auto red   = createColony( ColorRed  , 440, 10 );
+    auto black = createColony( ColorBlack,  15, 10 );
+    red  ->createBase( 15,               15,                "Red_0"   );
+    black->createBase( FIELD_WIDTH - 15, FIELD_HEIGHT - 15, "Black_0" );
     std::stringstream name;
     for(int i=0;i<OBJECTS;++i)
     {
         name.str( "" );
         name << "Ant_" << i;
-        new Ant( rand() % 31 - 15 + black->bases[0]->getX(),
-                 rand() % 31 - 15 + black->bases[0]->getY(),
-                 name.str(),
-                 black );
-        new Ant( rand() % 31 - 15 + red->bases[0]->getX(),
-                 rand() % 31 - 15 + red->bases[0]->getY(),
-                 name.str(),
-                 red );
+        black->createAnt( rand() % 31 - 15 + black->bases[0]->getX(),
+                          rand() % 31 - 15 + black->bases[0]->getY(),
+                          name.str() );
+        red  ->createAnt( rand() % 31 - 15 + red->bases[0]->getX(),
+                          rand() % 31 - 15 + red->bases[0]->getY(),
+                          name.str() );
         name.str( "" );
         name << "Food_" << i;
-        new Food( name.str() );
+        createFood( name.str() );
     }
 }
 
-Scene::~Scene()
+std::shared_ptr<Colony> Scene::createColony(Color col, int scoreX, int scoreY)
 {
-  dying = true;
-  for( int i = food.size() - 1; i >= 0; --i )
-      delete food[i];
-  for( int i = colonies.size() - 1; i >= 0; --i )
-      delete colonies[i];
+    colonies.push_back( std::make_shared<Colony>( shared_from_this(), col, scoreX, scoreY ));
+    return colonies.back();
 }
 
-void Scene::forgetFood( Food *what )
+std::shared_ptr<Block> Scene::createFood(const std::string &name)
 {
-    SDL_assert( what != NULL );
-    std::string name = what->getName();
-    food.erase( std::remove( food.begin(), food.end(), what ), food.end() );
-    if( !dying )
-        new Food( name );
+    food.push_back( std::make_shared<Food>( shared_from_this(), name ) );
+    return food.back();
 }
 
-void Scene::forgetColony(Colony *what)
+void Scene::forgetFood( std::weak_ptr<Block> what )
 {
-    SDL_assert( what != NULL );
-    colonies.erase( std::remove( colonies.begin(), colonies.end(), what ), colonies.end() );
+    std::shared_ptr<Block> existingWhat( what.lock() );
+    if( existingWhat )
+    {
+        std::string name = existingWhat->getName();
+        food.erase( std::remove( food.begin(), food.end(), existingWhat ), food.end() );
+        if( !quit )
+        {
+            createFood( name );
+        }
+    }
+}
+
+void Scene::forgetColony(std::weak_ptr<Colony> what)
+{
+    std::shared_ptr<Colony> existingWhat( what.lock() );
+    if( existingWhat )
+    {
+        colonies.erase( std::remove( colonies.begin(), colonies.end(), existingWhat ), colonies.end() );
+    }
 }
 
 void Scene::processEvents()
@@ -101,12 +114,9 @@ void Scene::processEvents()
 
 void Scene::action()
 {
-    for( unsigned int colonyNum = 0; colonyNum < colonies.size(); ++colonyNum )
+    for( auto colony : colonies )
     {
-        for( unsigned int antNum = 0; antNum < colonies[colonyNum]->ants.size(); ++antNum )
-        {
-            colonies[colonyNum]->ants[antNum]->action();
-        }
+        colony->action();
     }
     labelFPS.setText("FPS: ") << FPS;
 }
@@ -130,9 +140,9 @@ void Scene::draw()
 
 void Scene::allFoods()
 {
-    for ( unsigned int i = 0; i < food.size(); ++i )
+    for ( auto meal : food )
     {
-        delete food[0];
+        forgetFood( meal );
     }
 
 }

@@ -2,6 +2,7 @@
 #define COLONY_H
 
 #include <vector>
+#include <memory>
 
 #include "block.h"
 #include "graphics.h"
@@ -11,22 +12,28 @@ class Base;
 class Scene;
 class Ant;
 
-class Colony
+class Colony : public std::enable_shared_from_this<Colony>
 {
 public:
-    Colony(Scene* scene, Color col, int scoreX, int scoreY );
+    Colony( std::shared_ptr<Scene> scene, Color col, int scoreX, int scoreY );
     virtual ~Colony();
 
-    Scene* mainScene;
+    std::shared_ptr<Scene> mainScene;
     double score;
     Color color;
     int scorePosX, scorePosY;
-    std::vector< Block * > bases;
-    std::vector< Ant * > ants;
     Label label;
     virtual void draw();
-    virtual void forgetBase( Block *what );
-    virtual void forgetAnt( Block *what );
+    virtual void action();
+    void createBase( int x, int y, const std::string &name );
+    void createAnt( int x, int y, const std::string &name );
+    void forgetBase( std::weak_ptr<Block> what );
+    void forgetAnt( std::weak_ptr<Block> what );
+
+    std::vector< std::shared_ptr< Block > > bases;
+private:
+    std::vector< std::shared_ptr< Ant > > ants;
+
 };
 
 #endif // COLONY_H

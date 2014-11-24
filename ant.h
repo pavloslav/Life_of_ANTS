@@ -9,17 +9,21 @@
 class Ant : public ColonyBlock
 {
 public:
-    Ant(int x, int y, const std::string &name, Colony* col );
+    Ant( std::shared_ptr<Scene> scene,
+         int x,
+         int y,
+         const std::string &name,
+         std::shared_ptr<Colony> col );
     virtual ~Ant();
-    virtual void draw();
-    virtual void turnTo( Block *target );
+    void draw() override;
+    virtual void turnTo(std::weak_ptr<Block> who );
     virtual void action();
-    enum State {idle, goingToFood, carringFoodHome};
+    enum State { idle, goingToFood, carringFoodHome };
 
 private:
     Block::Direction direction;
     State state;
-    Block *target;
-    Label label;
+    std::weak_ptr<Block> target_;
+    std::unique_ptr<Label> label;
 };
 #endif // ANT_H

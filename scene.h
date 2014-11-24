@@ -2,39 +2,43 @@
 #define SCENE_H
 
 #include <vector>
+#include <memory>
 
 #include "food.h"
 #include "block.h"
 #include "colony.h"
 #include "graphics.h"
 #include "label.h"
+#include <memory>
 
-class Scene
+class Scene : public std::enable_shared_from_this<Scene>
 {
 public:
-    Scene( Graphics *gr, int w, int h );
+    Scene( std::shared_ptr<Graphics> gr, int w, int h );
     virtual ~Scene();
 
-    std::vector< Block * > food;
-    std::vector< Colony * > colonies;
+    std::vector< std::shared_ptr<Block> > food;
     int fieldWidth, fieldHeight;
     bool quit;
-    Graphics *graphics;
+    std::shared_ptr<Graphics> graphics;
     Color foodColor;
     double FPS;
 
     void init();
+    std::shared_ptr<Colony> createColony( Color col, int scoreX, int scoreY );
+    std::shared_ptr<Block> createFood( const std::string& name );
 
     virtual void draw();
     void allFoods();
     virtual void processEvents();
     virtual void action();
 
-    void forgetFood( Food *what );
-    void forgetColony( Colony *what );
+    void forgetFood( std::weak_ptr<Block> what );
+    void forgetColony( std::weak_ptr<Colony> what );
 private:
-    bool dying;
     Label labelFPS;
+    std::vector< std::shared_ptr<Colony> > colonies;
+
 };
 
 #endif // SCENE_H

@@ -7,13 +7,17 @@ class Colony;
 class ColonyBlock : public Block
 {
 public:
-    ColonyBlock(int x, int y, const std::string &name, Colony *col);
+    ColonyBlock( std::shared_ptr<Scene> scene,
+                 int x,
+                 int y,
+                 const std::string &name,
+                 std::shared_ptr<Colony> col );
     virtual ~ColonyBlock();
-    Colony *getColony() const;
-    virtual void draw() = 0;
+    std::shared_ptr<Colony> getColony() const;
+    void draw() override = 0;
 
 private:
-    Colony *colony;
+    std::shared_ptr<Colony> colony;
 };
 
 #endif // COLONYBLOCK_H

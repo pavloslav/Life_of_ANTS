@@ -1,14 +1,14 @@
 #ifndef LABEL_H
 #define LABEL_H
 
-
+#include <memory>
 #include <sstream>
 #include "graphics.h"
 
 class Label
 {
 public:
-    Label( Graphics *graph, TTF_Font *font, int x, int y, Color col, const std::string &string = "" );
+    Label(std::shared_ptr<Graphics> graph, TTF_Font *font, int x, int y, Color col, const std::string &string = "" );
     ~Label();
 
     void draw();
@@ -31,7 +31,7 @@ private:
     void createTexture();
     void calculateRects();
 
-    Graphics *graphics;
+    std::shared_ptr<Graphics> graphics;
     TTF_Font *font_;
     Color color;
     std::stringstream content;

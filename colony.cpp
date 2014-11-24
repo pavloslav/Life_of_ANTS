@@ -7,7 +7,7 @@
 #include "scene.h"
 #include "base.h"
 
-Colony::Colony( Scene * scene, Color col, int scoreX, int scoreY ) :
+Colony::Colony(std::shared_ptr<Scene> scene, Color col, int scoreX, int scoreY ) :
     mainScene( scene ),
     score( 0.0 ),
     color( col ),
@@ -15,47 +15,56 @@ Colony::Colony( Scene * scene, Color col, int scoreX, int scoreY ) :
     scorePosY( scoreY ),
     label( mainScene->graphics, mainScene->graphics->font, scoreX, scoreY, col )
 {
-    SDL_assert( mainScene != NULL );
-    mainScene->colonies.push_back( this );
+    SDL_assert( mainScene );
 }
 
 Colony::~Colony()
 {
-    for(int i = ants.size() - 1; i >= 0; --i)
-    {
-        delete ants[i];
-    }
-    SDL_assert( ants.size() == 0 );
-    for(int i = bases.size() - 1; i >= 0; --i)
-    {
-        delete bases[i];
-    }
-    SDL_assert( bases.size() == 0 );
-    mainScene->forgetColony( this );
 }
 
 void Colony::draw()
 {
-    for(unsigned int i=0;i<bases.size();++i)
+    for( auto base : bases )
     {
-        bases[i]->draw();
+        base->draw();
     }
-    for(unsigned int i=0;i<ants.size();++i)
+    for( auto ant : ants )
     {
-        ants[i]->draw();
+        ant->draw();
     }
     ( label.setText("Lives: ") << score ).draw();
-    //label.draw();
 }
 
-void Colony::forgetBase(Block *what)
+void Colony::action()
 {
-    SDL_assert( what != NULL );
-    bases.erase( std::remove( bases.begin(), bases.end(), what ), bases.end() );
+    for(auto ant : ants )
+        ant->action();
 }
 
-void Colony::forgetAnt(Block *what)
+void Colony::createBase(int x, int y, const std::string &name)
 {
-    SDL_assert( what != NULL );
-    ants.erase( std::remove( ants.begin(), ants.end(), what ), ants.end() );
+    bases.push_back( std::make_shared<Base>( mainScene, x, y, name, shared_from_this() ) );
+}
+
+void Colony::createAnt(int x, int y, const std::string &name)
+{
+    ants.push_back( std::make_shared<Ant>( mainScene, x, y, name, shared_from_this() ) );
+}
+
+void Colony::forgetBase( std::weak_ptr<Block> what )
+{
+    std::shared_ptr<Block> existingWhat( what.lock() );
+    if( existingWhat )
+    {
+        bases.erase( std::remove( bases.begin(), bases.end(), existingWhat ), bases.end() );
+    }
+}
+
+void Colony::forgetAnt(std::weak_ptr<Block> what)
+{
+    std::shared_ptr<Block> existingWhat( what.lock() );
+    if( existingWhat )
+    {
+        ants.erase( std::remove( ants.begin(), ants.end(), existingWhat ), ants.end() );
+    }
 }
