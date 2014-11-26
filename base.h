@@ -8,7 +8,7 @@ class Colony;
 class Base : public ColonyBlock
 {
 public:
-    Base( std::shared_ptr<Scene> scene, int x, int y, const std::string &name,  std::shared_ptr<Colony> col );
+    Base(int x, int y, const std::string &name,  std::shared_ptr<Colony> col );
     virtual ~Base();
     virtual void draw();
 

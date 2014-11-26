@@ -2,25 +2,24 @@
 
 #include <cstring>
 
-Label::Label( std::shared_ptr<Graphics> graph,
-              TTF_Font *font,
+#include "app.h"
+
+Label::Label( TTF_Font *font,
               int x,
               int y,
               Color col,
               const std::string &string)
               :
-    graphics ( graph ),
     font_ ( font ),
     color( col ),
     surface( NULL ),
-    texture( NULL )
+    texture( NULL ),
+    changed( false )
 {
-    SDL_assert( graphics );
     if( string != "" )
     {
         content << string;
-        createTexture();
-        calculateRects();
+        changed = true;
     }
     else
     {
@@ -45,40 +44,40 @@ Label::~Label()
 
 void Label::draw()
 {
-    SDL_RenderCopy( graphics->renderer, texture, &sourceRect, &targetRect );
+    createTexture();
+    SDL_RenderCopy( App::getApp()->getGraphics()->renderer, texture, &sourceRect, &targetRect );
 }
 
 void Label::createTexture()
 {
-    if( surface != NULL )
+    if( changed )
     {
-        SDL_FreeSurface( surface );
+        if( surface != NULL )
+        {
+            SDL_FreeSurface( surface );
+        }
+        char buffer[256];
+        strncpy( buffer, getText().c_str(), 256 );
+        surface = TTF_RenderText_Blended( font_, buffer, color );
+        SDL_assert( surface != NULL );
+
+        if( texture != NULL)
+        {
+            SDL_DestroyTexture( texture );
+        }
+        texture = SDL_CreateTextureFromSurface(  App::getApp()->getGraphics()->renderer, surface );
+        SDL_assert( texture != NULL );
+
+        SDL_GetClipRect( surface, &sourceRect );
+        targetRect.w = sourceRect.w - sourceRect.x;
+        targetRect.h = sourceRect.h - sourceRect.y;
     }
-    char buffer[256];
-    strncpy( buffer, getText().c_str(), 256 );
-    surface = TTF_RenderText_Blended( font_, buffer, color );
-    SDL_assert( surface != NULL );
-
-    if( texture != NULL)
-    {
-        SDL_DestroyTexture( texture );
-    }
-    texture = SDL_CreateTextureFromSurface( graphics->renderer, surface );
-    SDL_assert( texture != NULL );
-
-    SDL_GetClipRect( surface, &sourceRect );
-    calculateRects();
-}
-
-void Label::calculateRects()
-{
-    SDL_GetClipRect( surface, &sourceRect );
-    targetRect.w = sourceRect.w - sourceRect.x;
-    targetRect.h = sourceRect.h - sourceRect.y;
+    changed = false;
 }
 
 const SDL_Rect& Label::getRect()
 {
+    createTexture();
     return targetRect;
 }
 
@@ -110,11 +109,13 @@ void Label::setXY( int x, int y )
 
 int Label::getHeight()
 {
+    createTexture();
     return targetRect.h;
 }
 
 int Label::getWidth()
 {
+    createTexture();
     return targetRect.w;
 }
 
@@ -127,7 +128,7 @@ Label& Label::setText(const std::string &string)
 {
     content.str( std::string() );
     content << string;
-    createTexture();
+    changed = true;
     return *this;
 }
 
