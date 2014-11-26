@@ -42,7 +42,7 @@ SDL_Point Graphics::point( float x, float y )
     return transformed;
 }
 
-SDL_Rect Graphics::rect( const ScreenPoint& position, const ScreenPoint& size )
+SDL_Rect Graphics::rect( float x, float y, float w, float h )
 {
     SDL_Rect transformed;
     transformed.x = x * BLOCK_SIZE;
@@ -55,11 +55,6 @@ SDL_Rect Graphics::rect( const ScreenPoint& position, const ScreenPoint& size )
 void Graphics::setColor( const Color &color )
 {
     SDL_SetRenderDrawColor( renderer, color.r, color.g, color.b, color.a );
-}
-
-void Graphics::updateWindow()
-{
-    SDL_RenderPresent( renderer );
 }
 
 Color::Color( Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha )

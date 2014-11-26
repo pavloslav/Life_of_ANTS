@@ -1,20 +1,19 @@
 ﻿#include "ant.h"
+#include "scene.h"
 
 #include <cstdlib>
 #include <algorithm>
 
-#include "scene.h"
-#include "app.h"
-
-Ant::Ant( int x,
+Ant::Ant( std::shared_ptr<Scene> scene,
+          int x,
           int y,
           const std::string& name,
           std::shared_ptr<Colony> col )
     :
-      ColonyBlock( x, y, name, col ),
+      ColonyBlock( scene, x, y, name, col ),
       direction( right ),
       state( idle ),
-      label( std::unique_ptr<Label>( new Label( App::getApp()->getGraphics()->smallFont, 0, 0, col->color, name ) ) )
+      label( std::unique_ptr<Label>( new Label( mainScene->graphics, mainScene->graphics->smallFont, 0, 0, col->color, name ) ) )
 {
 }
 
@@ -27,7 +26,7 @@ void Ant::turnTo( std::weak_ptr<Block> who )
     std::shared_ptr<Block> existingWho( who.lock() );
     if( existingWho )
     {
-       /* if ( (getY() < existingWho->getY() ) && ( direction != Block::down ) )
+        if ( (getY() < existingWho->getY() ) && ( direction != Block::down ) )
         {
             direction = Block::up;
         }
@@ -42,8 +41,7 @@ void Ant::turnTo( std::weak_ptr<Block> who )
         else if ( (getX()>existingWho->getX()) && (direction != Block::right) )
         {
             direction = Block::left;
-        }*/
-        direction = ( existingWho->getPlace() - getPlace() ).norm();
+        }
     }
 }
 
@@ -53,8 +51,8 @@ void Ant::action()
     switch( state )
     {
     case idle :
-        target_ = nearest( App::getApp()->getScene()->food );
-        if( getPlace().distance(target->getPlace()) < 50 )
+        target_ = nearest( mainScene->food );
+        if( distance(target_) < 50 )
         {
             state = goingToFood;
         }
@@ -72,16 +70,16 @@ void Ant::action()
         }
         else
         {
-            if( getPlace() == target->getPlace() )
+            if( isOn( target_ ) )
             {
-                App::getApp()->getScene()->forgetFood( target_ );
+                mainScene->forgetFood( target_ );
                 target_ = nearest( getColony()->bases );
                 state = carringFoodHome;
             }
         }
         break;
     case carringFoodHome :
-        if( getPlace() == target->getPlace() )
+        if( isOn( target_ ) )
         {
             getColony()->score++;
             state = idle;
@@ -101,12 +99,10 @@ void Ant::action()
 
 void Ant::draw()
 {
-    std::shared_ptr<Graphics> graphics = App::getApp()->getGraphics();
-    graphics->setColor( getColony()->color );
-    SDL_Rect rect = Graphics::rect( getPlace(), ModelPoint(0.9, 0.9) );
-    SDL_RenderDrawRect( graphics->renderer, &rect );
-
-    SDL_Point realPoint = Graphics::point( getX(), getY() );
+    mainScene->graphics->setColor( getColony()->color );
+    SDL_Rect rect = Graphics::rect( getX(), getY(), 0.9, 0.9 );
+    SDL_RenderDrawRect( mainScene->graphics->renderer, &rect );
+    SDL_Point realPoint = mainScene->graphics->point( getX(), getY() );
     label->setXY( realPoint.x + 2, realPoint.y - 10 );
     label->draw();
 }

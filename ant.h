@@ -9,7 +9,8 @@
 class Ant : public ColonyBlock
 {
 public:
-    Ant(int x,
+    Ant( std::shared_ptr<Scene> scene,
+         int x,
          int y,
          const std::string &name,
          std::shared_ptr<Colony> col );
@@ -20,8 +21,7 @@ public:
     enum State { idle, goingToFood, carringFoodHome };
 
 private:
-    //Block::Direction direction;
-    ModelPoint direction;
+    Block::Direction direction;
     State state;
     std::weak_ptr<Block> target_;
     std::unique_ptr<Label> label;

@@ -8,7 +8,7 @@
 class Label
 {
 public:
-    Label( TTF_Font *font, int x, int y, Color col, const std::string &string = "" );
+    Label(std::shared_ptr<Graphics> graph, TTF_Font *font, int x, int y, Color col, const std::string &string = "" );
     ~Label();
 
     void draw();
@@ -29,14 +29,15 @@ public:
 
 private:
     void createTexture();
+    void calculateRects();
 
+    std::shared_ptr<Graphics> graphics;
     TTF_Font *font_;
     Color color;
     std::stringstream content;
     SDL_Surface *surface;
     SDL_Texture *texture;
     SDL_Rect sourceRect, targetRect;
-    bool changed;
 };
 
 template< typename T >

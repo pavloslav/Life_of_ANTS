@@ -1,25 +1,28 @@
 #include "scene.h"
+#include "colony.h"
+#include "food.h"
+#include "ant.h"
+#include "graphics.h"
 
 #include <SDL2/SDL.h>
 #include <algorithm>
 #include <sstream>
 #include <cstring>
 
-#include "ant.h"
-#include "graphics.h"
-#include "app.h"
-
-Scene::Scene( int w, int h ) :
+Scene::Scene( std::shared_ptr<Graphics> gr, int w, int h ) :
     fieldWidth( w ),
     fieldHeight( h ),
+    quit(false),
+    graphics( gr ),
     foodColor( ColorBlue ),
     FPS( 0.0 ),
-    labelFPS( App::getApp()->getGraphics()->font, 200, 10, ColorGreen )
+    labelFPS( gr, gr->font, 200, 10, ColorGreen )
 {
 }
 
 Scene::~Scene()
 {
+    quit = true;
 }
 
 void Scene::init()
@@ -41,9 +44,7 @@ void Scene::init()
                           name.str() );
         name.str( "" );
         name << "Food_" << i;
-        createFood( rand() % fieldWidth,
-                    rand() % fieldHeight,
-                    name.str() );
+        createFood( name.str() );
     }
 }
 
@@ -53,9 +54,9 @@ std::shared_ptr<Colony> Scene::createColony(Color col, int scoreX, int scoreY)
     return colonies.back();
 }
 
-std::shared_ptr<Block> Scene::createFood(int x, int y, const std::string &name)
+std::shared_ptr<Block> Scene::createFood(const std::string &name)
 {
-    food.push_back( std::make_shared<Food>( x, y, name ) );
+    food.push_back( std::make_shared<Food>( shared_from_this(), name ) );
     return food.back();
 }
 
@@ -66,11 +67,9 @@ void Scene::forgetFood( std::weak_ptr<Block> what )
     {
         std::string name = existingWhat->getName();
         food.erase( std::remove( food.begin(), food.end(), existingWhat ), food.end() );
-        if( !App::getApp()->isQuiting )
+        if( !quit )
         {
-            createFood( rand() % fieldWidth,
-                        rand() % fieldHeight,
-                        name );
+            createFood( name );
         }
     }
 }
@@ -84,9 +83,38 @@ void Scene::forgetColony(std::weak_ptr<Colony> what)
     }
 }
 
+void Scene::processEvents()
+{
+    SDL_Event Event;
+    while( SDL_PollEvent( &Event ) )
+    {
+        switch( Event.type )
+        {
+        case SDL_QUIT:
+            quit = true;
+            break;
+        case SDL_KEYDOWN:
+            switch( Event.key.keysym.scancode )
+            {
+            case SDL_SCANCODE_Z:
+                allFoods();
+                break;
+            case SDL_SCANCODE_M:
+                SDL_assert(false);
+                break;
+            default:
+                break;
+            }
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 void Scene::action()
 {
-    for( auto &colony : colonies )
+    for( auto colony : colonies )
     {
         colony->action();
     }
@@ -95,25 +123,24 @@ void Scene::action()
 
 void Scene::draw()
 {
-    const std::shared_ptr<Graphics>& graphics = App::getApp()->getGraphics();
     graphics->setColor( ColorYellow );
     int result = SDL_RenderClear( graphics->renderer );
     SDL_assert( result >= 0 );
-    for( auto &colony : colonies )
+    for(unsigned int i=0;i<colonies.size();++i)
     {
-        colony->draw();
+        colonies[i]->draw();
     }
-    for ( auto &meal : food )
+    for (unsigned int i=0;i<food.size();i++)
     {
-        meal->draw();
+        food[i]->draw();
     }
     labelFPS.draw();
-
+    SDL_RenderPresent( graphics->renderer );
 }
 
-void Scene::resetFood()
+void Scene::allFoods()
 {
-    for ( auto &meal : food )
+    for ( auto meal : food )
     {
         forgetFood( meal );
     }

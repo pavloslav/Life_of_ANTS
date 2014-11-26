@@ -25,8 +25,8 @@ public:
     Label label;
     virtual void draw();
     virtual void action();
-    std::shared_ptr<Block> createBase( int x, int y, const std::string &name );
-    std::shared_ptr<Block> createAnt( int x, int y, const std::string &name );
+    void createBase( int x, int y, const std::string &name );
+    void createAnt( int x, int y, const std::string &name );
     void forgetBase( std::weak_ptr<Block> what );
     void forgetAnt( std::weak_ptr<Block> what );
 
