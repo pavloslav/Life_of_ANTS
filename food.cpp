@@ -1,13 +1,18 @@
 #include "food.h"
-#include "block.h"
-#include "scene.h"
+#include "app.h"
 #include "graphics.h"
+#include "scene.h"
+#include "label.h"
 
-Food::Food( std::shared_ptr<Scene> scene, const std::string &name ) :
-    Block( scene, rand() % scene->fieldWidth, rand() % scene->fieldHeight, name ),
-    label( scene->graphics, scene->graphics->smallFont, 0, 0, scene->foodColor, name )
+Food::Food( int x, int y, const std::string &name ) :
+    Block( x, y, name ),
+    label( App::getApp()->getGraphics()->smallFont,
+           0,
+           0,
+           App::getApp()->getScene()->foodColor,
+           name )
 {
-    SDL_Point realPoint = mainScene->graphics->point( getX(), getY() );
+    SDL_Point realPoint = Graphics::point( getX(), getY() );
     label.setXY( realPoint.x, realPoint.y - 10 );
 }
 
@@ -17,8 +22,9 @@ Food::~Food()
 
 void Food::draw()
 {
-    mainScene->graphics->setColor( mainScene->foodColor );
+    const std::shared_ptr<Graphics> &graphics = App::getApp()->getGraphics();
+    graphics->setColor( App::getApp()->getScene()->foodColor );
     SDL_Rect rect = Graphics::rect( getX(), getY(), 1.3, 1.3 );
-    SDL_RenderDrawRect( mainScene->graphics->renderer, &rect );
+    SDL_RenderDrawRect( graphics->renderer, &rect );
     label.draw();
 }

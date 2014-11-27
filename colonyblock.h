@@ -7,8 +7,7 @@ class Colony;
 class ColonyBlock : public Block
 {
 public:
-    ColonyBlock( std::shared_ptr<Scene> scene,
-                 int x,
+    ColonyBlock( int x,
                  int y,
                  const std::string &name,
                  std::shared_ptr<Colony> col );
