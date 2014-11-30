@@ -7,9 +7,9 @@
 class Food : public Block
 {
 public:
-    Food(int x, int y, const std::string& name );
+    Food(const ModelPoint &location, const std::string& name );
     virtual ~Food();
-    virtual void draw();
+    void draw() override;
 private:
     Label label;
 };

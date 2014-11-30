@@ -14,6 +14,16 @@ Block::~Block()
 {
 }
 
+const ModelPoint &Block::getPlace()
+{
+    return place;
+}
+
+void Block::setPlace( const ModelPoint &p )
+{
+    place = p;
+}
+
 const std::string &Block::getName() const
 {
     return name_;
@@ -22,27 +32,6 @@ const std::string &Block::getName() const
 void Block::setName(const std::string &newName)
 {
     name_ = newName;
-}
-
-/*double Block::distance2( std::weak_ptr<Block> who ) const
-{
-    std::shared_ptr<Block> existingWho( who );
-    SDL_assert( existingWho );
-    double deltaX = getX() - existingWho->getX();
-    double deltaY = getY() - existingWho->getY();
-    return ( ( deltaX * deltaX ) + ( deltaY * deltaY ) );
-}
-
-double Block::distance( std::weak_ptr<Block> who ) const
-{
-    double distanceSquared = distance2( who );
-    SDL_assert( distanceSquared >= 0 );
-    return sqrt( distanceSquared );
-}*/
-
-void Block::step( ModelPoint shift )
-{
-    place += shift;
 }
 
 std::weak_ptr<Block> Block::nearest( const std::vector<std::shared_ptr<Block>>& vect )
@@ -58,7 +47,7 @@ std::weak_ptr<Block> Block::nearest( const std::vector<std::shared_ptr<Block>>& 
                                   [this]( const std::shared_ptr<Block>& left,
                                           const std::shared_ptr<Block>& right)
                                   {
-                                      return place->distance2(left->place) < place->distance2(right->place);
+                                      return place.distance2(left->place) < place.distance2(right->place);
                                   }
                         );
     }

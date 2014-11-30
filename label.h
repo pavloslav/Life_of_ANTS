@@ -8,15 +8,12 @@
 class Label
 {
 public:
-    Label( TTF_Font *font, int x, int y, Color col, const std::string &string = "" );
+    Label( TTF_Font *font, ScreenPoint place, Color col, const std::string &string = "" );
     ~Label();
 
     void draw();
-    void setX( int x );
-    int getX() const;
-    void setY( int y );
-    int getY() const;
-    void setXY( int x, int y );
+    void setPlace(const ScreenPoint& point );;
+    ScreenPoint getPlace();
     int getHeight();
     int getWidth();
     const SDL_Rect& getRect();
@@ -29,7 +26,6 @@ public:
 
 private:
     void createTexture();
-
     TTF_Font *font_;
     Color color;
     std::stringstream content;

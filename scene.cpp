@@ -9,12 +9,11 @@
 #include "graphics.h"
 #include "app.h"
 
-Scene::Scene( int w, int h ) :
-    fieldWidth( w ),
-    fieldHeight( h ),
+Scene::Scene( const ModelPoint& size ) :
+    map( ModelPoint( 0.0, 0.0 ), size ),
     foodColor( ColorBlue ),
     FPS( 0.0 ),
-    labelFPS( App::getApp()->getGraphics()->font, 200, 10, ColorGreen )
+    labelFPS( App::getApp()->getGraphics()->font, ScreenPoint( 200, 10 ), ColorGreen )
 {
 }
 
@@ -24,39 +23,40 @@ Scene::~Scene()
 
 void Scene::init()
 {
-    auto red   = createColony( ColorRed  , 440, 10 );
-    auto black = createColony( ColorBlack,  15, 10 );
-    red  ->createBase( 15,               15,                "Red_0"   );
-    black->createBase( FIELD_WIDTH - 15, FIELD_HEIGHT - 15, "Black_0" );
+    auto red   = createColony( ColorRed  , ScreenPoint( 440, 10 ) );
+    auto black = createColony( ColorBlack, ScreenPoint( 15, 10 ) );
+    red  ->createBase( ModelPoint( 15, 15 )                             , "Red_0"   );
+    black->createBase( ModelPoint( FIELD_WIDTH - 15, FIELD_HEIGHT - 15 ), "Black_0" );
     std::stringstream name;
     for(int i=0;i<OBJECTS;++i)
     {
         name.str( "" );
         name << "Ant_" << i;
-        black->createAnt( rand() % 31 - 15 + black->bases[0]->getX(),
-                          rand() % 31 - 15 + black->bases[0]->getY(),
+        black->createAnt( ModelPoint( black->bases[0]->getPlace()
+                                     + ModelPoint( rand() % 31 - 15, rand() % 31 - 15 ) ),
                           name.str() );
-        red  ->createAnt( rand() % 31 - 15 + red->bases[0]->getX(),
-                          rand() % 31 - 15 + red->bases[0]->getY(),
+        red  ->createAnt( ModelPoint( red  ->bases[0]->getPlace()
+                                     + ModelPoint( rand() % 31 - 15, rand() % 31 - 15 ) ),
                           name.str() );
         name.str( "" );
         name << "Food_" << i;
-        createFood( rand() % fieldWidth,
-                    rand() % fieldHeight,
+        createFood( ModelPoint( rand() % int(map.size.getX()), rand() % int(map.size.getY()) ),
                     name.str() );
     }
 }
 
-std::shared_ptr<Colony> Scene::createColony(Color col, int scoreX, int scoreY)
+std::shared_ptr<Colony> Scene::createColony(Color col, ScreenPoint scoreLocation)
 {
-    colonies.push_back( std::make_shared<Colony>( shared_from_this(), col, scoreX, scoreY ));
-    return colonies.back();
+    auto colony = std::make_shared<Colony>( shared_from_this(), col, scoreLocation );
+    colonies.push_back( colony );
+    return colony;
 }
 
-std::shared_ptr<Block> Scene::createFood(int x, int y, const std::string &name)
+std::shared_ptr<Block> Scene::createFood( const ModelPoint& location, const std::string &name)
 {
-    food.push_back( std::make_shared<Food>( x, y, name ) );
-    return food.back();
+    auto newFood = std::make_shared<Food>( location, name );
+    food.push_back( newFood );
+    return newFood;
 }
 
 void Scene::forgetFood( std::weak_ptr<Block> what )
@@ -68,8 +68,7 @@ void Scene::forgetFood( std::weak_ptr<Block> what )
         food.erase( std::remove( food.begin(), food.end(), existingWhat ), food.end() );
         if( !App::getApp()->isQuiting )
         {
-            createFood( rand() % fieldWidth,
-                        rand() % fieldHeight,
+            createFood( ModelPoint( rand() % int(map.size.getX()), rand() % int(map.size.getY()) ),
                         name );
         }
     }

@@ -5,8 +5,7 @@
 #include "app.h"
 
 Label::Label( TTF_Font *font,
-              int x,
-              int y,
+              ScreenPoint place,
               Color col,
               const std::string &string)
               :
@@ -14,24 +13,11 @@ Label::Label( TTF_Font *font,
     color( col ),
     surface( NULL ),
     texture( NULL ),
-    changed( false )
+    sourceRect( ScreenRectangle( ScreenPoint( 0, 0), ScreenPoint( 0, 0 ) ) ),
+    targetRect( ScreenRectangle( place,              ScreenPoint( 0, 0 ) ) ),
+    changed( string != "" )
 {
-    if( string != "" )
-    {
-        content << string;
-        changed = true;
-    }
-    else
-    {
-        sourceRect.x = 0;
-        sourceRect.y = 0;
-        sourceRect.w = 0;
-        sourceRect.h = 0;
-        targetRect.h = 0;
-        targetRect.w = 0;
-    }
-    targetRect.x = x;
-    targetRect.y = y;
+    content << string;
 }
 
 Label::~Label()
@@ -46,6 +32,17 @@ void Label::draw()
 {
     createTexture();
     SDL_RenderCopy( App::getApp()->getGraphics()->renderer, texture, &sourceRect, &targetRect );
+}
+
+void Label::setPlace(const ScreenPoint &point)
+{
+    targetRect.x = point.getX();
+    targetRect.y = point.getY();
+}
+
+ScreenPoint Label::getPlace()
+{
+    return ScreenPoint( targetRect.x, targetRect.y );
 }
 
 void Label::createTexture()
@@ -79,32 +76,6 @@ const SDL_Rect& Label::getRect()
 {
     createTexture();
     return targetRect;
-}
-
-void Label::setX( int x )
-{
-    targetRect.x = x;
-}
-
-int Label::getX() const
-{
-    return targetRect.x;
-}
-
-void Label::setY( int y )
-{
-    targetRect.y = y;
-}
-
-int Label::getY() const
-{
-    return targetRect.y;
-}
-
-void Label::setXY( int x, int y )
-{
-    targetRect.x = x;
-    targetRect.y = y;
 }
 
 int Label::getHeight()

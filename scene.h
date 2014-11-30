@@ -12,17 +12,17 @@
 class Scene : public std::enable_shared_from_this<Scene>
 {
 public:
-    Scene(int w, int h );
+    Scene(const ModelPoint &size);
     virtual ~Scene();
 
-    int fieldWidth, fieldHeight;
+    ModelRectangle map;
     Color foodColor;
     double FPS;
     std::vector< std::shared_ptr<Block> > food;
 
     void init();
-    std::shared_ptr<Colony> createColony( Color col, int scoreX, int scoreY );
-    std::shared_ptr<Block> createFood( int x, int y, const std::string& name );
+    std::shared_ptr<Colony> createColony( Color col, ScreenPoint scoreLocation );
+    std::shared_ptr<Block> createFood( const ModelPoint& location, const std::string& name );
 
     virtual void draw();
     void resetFood();
@@ -34,6 +34,7 @@ public:
 private:
     Label labelFPS;
     std::vector< std::shared_ptr<Colony> > colonies;
+
 };
 
 #endif // SCENE_H

@@ -7,8 +7,7 @@ class Colony;
 class ColonyBlock : public Block
 {
 public:
-    ColonyBlock( int x,
-                 int y,
+    ColonyBlock( const ModelPoint& location,
                  const std::string &name,
                  std::shared_ptr<Colony> col );
     virtual ~ColonyBlock();

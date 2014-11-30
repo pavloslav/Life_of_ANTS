@@ -34,24 +34,6 @@ Graphics::~Graphics()
     SDL_Quit();
 }
 
-SDL_Point Graphics::point( float x, float y )
-{
-    SDL_Point transformed;
-    transformed.x = x * BLOCK_SIZE;
-    transformed.y = HEADER_SIZE + y * BLOCK_SIZE;
-    return transformed;
-}
-
-SDL_Rect Graphics::rect( const ScreenPoint& position, const ScreenPoint& size )
-{
-    SDL_Rect transformed;
-    transformed.x = x * BLOCK_SIZE;
-    transformed.y = HEADER_SIZE + y * BLOCK_SIZE;
-    transformed.w = w * BLOCK_SIZE;
-    transformed.h = h * BLOCK_SIZE;
-    return transformed;
-}
-
 void Graphics::setColor( const Color &color )
 {
     SDL_SetRenderDrawColor( renderer, color.r, color.g, color.b, color.a );

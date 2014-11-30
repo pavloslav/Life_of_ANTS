@@ -15,18 +15,17 @@ class Ant;
 class Colony : public std::enable_shared_from_this<Colony>
 {
 public:
-    Colony( std::shared_ptr<Scene> scene, Color col, int scoreX, int scoreY );
+    Colony( std::shared_ptr<Scene> scene, Color col, const ScreenPoint& scoreLocation );
     virtual ~Colony();
 
     std::shared_ptr<Scene> mainScene;
     double score;
     Color color;
-    int scorePosX, scorePosY;
     Label label;
     virtual void draw();
     virtual void action();
-    std::shared_ptr<Block> createBase( int x, int y, const std::string &name );
-    std::shared_ptr<Block> createAnt( int x, int y, const std::string &name );
+    std::shared_ptr<Block> createBase( const ModelPoint& location, const std::string &name );
+    std::shared_ptr<Block> createAnt(const ModelPoint &location, const std::string &name );
     void forgetBase( std::weak_ptr<Block> what );
     void forgetAnt( std::weak_ptr<Block> what );
 

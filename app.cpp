@@ -15,7 +15,7 @@ App::App()
 
 void App::init()
 {
-    scene = std::make_shared<Scene> ( FIELD_WIDTH, FIELD_HEIGHT );
+    scene = std::make_shared<Scene> ( ModelPoint( FIELD_WIDTH, FIELD_HEIGHT ) );
     scene->init();
 }
 

@@ -8,13 +8,11 @@
 #include "base.h"
 #include "app.h"
 
-Colony::Colony(std::shared_ptr<Scene> scene, Color col, int scoreX, int scoreY ) :
+Colony::Colony(std::shared_ptr<Scene> scene, Color col, const ScreenPoint &scoreLocation) :
     mainScene( scene ),
     score( 0.0 ),
     color( col ),
-    scorePosX( scoreX ),
-    scorePosY( scoreY ),
-    label( App::getApp()->getGraphics()->font, scoreX, scoreY, col )
+    label( App::getApp()->getGraphics()->font, scoreLocation, col )
 {
     SDL_assert( mainScene );
 }
@@ -42,16 +40,16 @@ void Colony::action()
         ant->action();
 }
 
-std::shared_ptr<Block> Colony::createBase(int x, int y, const std::string &name)
+std::shared_ptr<Block> Colony::createBase( const ModelPoint &location, const std::string &name )
 {
-    auto base = std::make_shared<Base>( x, y, name, shared_from_this() );
+    auto base = std::make_shared<Base>( location, name, shared_from_this() );
     bases.push_back( base );
     return base;
 }
 
-std::shared_ptr<Block> Colony::createAnt(int x, int y, const std::string &name)
+std::shared_ptr<Block> Colony::createAnt( const ModelPoint &location, const std::string &name)
 {
-    auto ant = std::make_shared<Ant>( x, y, name, shared_from_this() );
+    auto ant = std::make_shared<Ant>( location, name, shared_from_this() );
     ants.push_back( ant );
     return ant;
 }
